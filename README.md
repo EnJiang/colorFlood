@@ -10,3 +10,10 @@
   The import part is that I find it interesting to apply all kinds of algrithm on it to solve the problem, I mean it's always more fun to learn by practicing.<br>
   Any good way to improve the preformance or any elegent algrithm to get (or approch) a optimal solve, please start a issue.
 
+#algrithms
+###Random
+  Code in randomPIck.py<br>
+  Pick one color randomly from all colors other than the previous one, as picking same color twice has no meaning.
+###greedy
+  Code in greedy.py<br>
+  The code examine all possible "n depth" continious choices(let's call it a path) and pick the best path until the board is filled. For example "red green blue" would be a 3 depth path. There is no guarantee that in this way we will get a best solution, in fact in my test, the larger I set the depth the shorter path I get averagely. At depth 1 the algrithm has a average 23-step long path in 29912 tests. Pretty awsome! However greedy algrithm can not give me a optimal path with a acceptable complexity(5^n for a n depth).
