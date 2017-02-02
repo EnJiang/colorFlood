@@ -2,6 +2,7 @@
 
 import random
 import copy
+import numpy
 
 class Node():
   def __init__(self,position,father):
@@ -160,6 +161,54 @@ class Game():
       return True
     else:
       return False
+
+  def mainBoardArray(self):
+    return numpy.array(\
+        [\
+          numpy.array(self.mainBorad).reshape(144)
+        ]
+      )
+
+  def mainBoardMatrix(self):
+    return numpy.array(\
+        [\
+          numpy.array(self.mainBorad).reshape(12,12,1)
+        ]
+      )
+
+  def mainBoardString(self):
+    string = ""
+    for i in self.mainBorad:
+      for j in i:
+        string+=str(j)
+    return string
+
+  def colorDistriString(self):
+    colorDistri = []
+    # print self.mainBorad
+    for i in range(6):
+      color = i+1
+      temp = ""
+      for j in self.mainBorad:
+        for k in j:
+          if(k==color):
+            temp+='1'
+          else:
+            temp+='0'
+      # print temp
+      colorDistri.append(temp)
+    string = ""
+    # print sorted(colorDistri)
+    for s in sorted(colorDistri):
+      string+=s
+    return string
+
+
+  def initByString(self,string):
+    for i in range(12):
+      for j in range(12):
+        self.mainBorad[i][j] = int(string[i*12+j])
+    self.targetBoard = self.spider.targetBoard(self.mainBorad)
 
   def __str__(self):
     output = ''
