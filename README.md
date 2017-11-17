@@ -3,7 +3,7 @@
   In this game you have a n plus n borad (grid?) with multiple colors on it, each one grid has one color respectively. The main goal is to "flood" the borad in one color. The thing is, first take look at the color of the top-left grid(1,1), and if its neibors((1,2) and (2,1)) have the same color with it, they are joint as a area(I call it the "target area"). A move you make is to pick one kind of color and then the target area changes into it. If you do it right, now your target area should be larger than before. Say, if your target area is originally red, and you pick blue, all the blue grids that were at the edge of you red targrt area now join in and become a partner.<br>
   And there is a simple way to measure how well you play, which is the sum of moves your made to get a one-colored board.<br>
   [You can play it here.](http://unixpapa.com/floodit/)<br>
-  Update at 2017/11/17: The problem is proven to be NP-hard, meaning (almost...) no polynomial solution, however if a nice, namely admissible heuristic could be found, we might still get a optimal solution in acceptable time. As a result I might focus on A* algorithm from now on.
+  Update at 2017/11/17: The problem is [proven](http://www.bris.ac.uk/news/2010/6945.html) to be NP-hard, meaning (almost...) no polynomial solution, however if a nice, namely admissible heuristic could be found, we might still get a optimal solution in acceptable time. As a result I might focus on A* algorithm from now on.
 
 # What is this repo?
   I am trying to do several things...<br>
