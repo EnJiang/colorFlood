@@ -1,7 +1,7 @@
 #coding:utf-8
 
 from Game import *
-import MySQLdb
+# import MySQLdb
 import copy
 
 def toTry(depth):
@@ -48,7 +48,9 @@ def greedy(game,depth):
   #print color
   return color
 
-depth=1
+
+result = []
+depth=3
 while 1:
   game = Game()
   init = game.mainBoardString()
@@ -62,4 +64,7 @@ while 1:
         break
   step = len(game.allStep)
   allStep = game.allStep
-  print "use",step,"step:",allStep
+  # print "use",step,"step:",allStep
+
+  result.append(step)
+  print(sum(result) * 1.0 / len(result), len(result))
