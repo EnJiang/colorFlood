@@ -3,6 +3,7 @@
 from Game import *
 # import MySQLdb
 import copy
+import time
 
 def toTry(depth):
   tryList = [ [] for x in range(pow(6,depth)) ]
@@ -52,6 +53,7 @@ def greedy(game,depth):
 result = []
 depth=3
 while 1:
+  start_time = time.time()
   game = Game()
   init = game.mainBoardString()
   while not game.isOver():
@@ -67,4 +69,4 @@ while 1:
   # print "use",step,"step:",allStep
 
   result.append(step)
-  print(sum(result) * 1.0 / len(result), len(result))
+  print(sum(result) * 1.0 / len(result), len(result), time.time() - start_time)

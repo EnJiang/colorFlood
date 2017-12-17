@@ -169,18 +169,19 @@ class Game():
                 if self.mainBorad[i][j] not in remain_color:
                     remain_color.append(self.mainBorad[i][j])
 
-        samllest_manhattan_distance = 24
+        smallest_manhattan_distance = 24
         for x in range(12):
             for y in range(12):
                 if(self.targetBoard[x][y] == 1):
                     manhattan_distance = 11 - x + 11 - y
-                    if manhattan_distance < samllest_manhattan_distance:
-                        samllest_manhattan_distance = manhattan_distance
+                    if manhattan_distance < smallest_manhattan_distance:
+                        smallest_manhattan_distance = manhattan_distance
 
-        if samllest_manhattan_distance < 3:
-            self.f = self.step + len(remain_color) - 1
-        else:
-            self.f = self.step + samllest_manhattan_distance
+        self.f = self.step + max(smallest_manhattan_distance, len(remain_color) - 1) + \
+                 (144 - self.targetArea()) * 1.0 / 144
+        # self.f = self.step + smallest_manhattan_distance + \
+            # len(remain_color) - 1 + (144 - self.targetArea()) * 1.0 / 144
+
 
     def __eq__(self, game):
         for i in range(12):
@@ -267,3 +268,4 @@ class Game():
 
 if __name__ == "__main__":
     game = Game()
+
