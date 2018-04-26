@@ -6,10 +6,10 @@ from Game import *
 from time import time
 import pymysql
 
-db = pymysql.connect(host='114.115.217.207',
+db = pymysql.connect(host='',
                              port=3306,
                              user='root',
-                             password='123000000z',
+                             password='xxxxxxx',
                              db='colorflood',
                              charset='utf8')
 
