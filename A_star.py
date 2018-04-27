@@ -1,20 +1,21 @@
-#coding:utf-8
+# coding:utf-8
 
 import random
 import copy
-from Game import *
+from game import *
 from time import time
 import pymysql
 
 try:
     db = pymysql.connect(host='',
-                                port=3306,
-                                user='root',
-                                password='xxxxxxx',
-                                db='colorflood',
-                                charset='utf8')
-else:
+                         port=3306,
+                         user='root',
+                         password='xxxxxxx',
+                         db='colorflood',
+                         charset='utf8')
+except:
     db = None
+
 
 class AStartSolver:
     def __init__(self):
@@ -42,7 +43,7 @@ class AStartSolver:
                 self.report()
                 self.explore()
         print("done in %d path" % self.lowest_f_game.step)
-            # print(time() - start, self.counter)
+        # print(time() - start, self.counter)
 
     def save(self):
         if db is None:
@@ -67,9 +68,9 @@ class AStartSolver:
     def report(self):
         return
         if self.counter % 1000 == 0:
-        # if True:
+            # if True:
             print("iteration %d, f: %f, path: %s, step:%d"
-                % (self.counter, self.lowest_f_game.f, self.lowest_f_game.allStep, self.lowest_f_game.step))
+                  % (self.counter, self.lowest_f_game.f, self.lowest_f_game.allStep, self.lowest_f_game.step))
             print(self.lowest_f_game)
         # print(self.open)
 
@@ -103,4 +104,3 @@ if __name__ == "__main__":
         f.write(str(a.lowest_f_game.step) + '\n')
         f.close()
         # a.save()
-
