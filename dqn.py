@@ -89,7 +89,7 @@ dqn.compile(Adam(lr=1e-4), metrics=['mae'])
 # slows down training quite a lot. You can always safely abort the training prematurely using
 # Ctrl + C.
 
-dqn.load_weights('dqn_{}_weights.h5f'.format(ENV_NAME))
+# dqn.load_weights('dqn_{}_weights.h5f'.format(ENV_NAME))
 dqn.fit(env, nb_steps=500000, visualize=False, verbose=2)
 dqn.save_weights('dqn_{}_weights.h5f'.format(ENV_NAME), overwrite=True)
 
