@@ -30,16 +30,23 @@ class MyPolicy(EpsGreedyQPolicy):
         assert q_values.ndim == 1
         nb_actions = q_values.shape[0]
 
-        if np.random.uniform() < self.eps:
-            action = self.eps_or_rand(q_values)
-        else:
-            action = np.argmax(q_values)
+        if self.eps > 0.05: # warming up phrase, greedy only
+            try:
+                action = greedy(self.env.game, 1)[0] - 1
+            except:
+                action = np.random.random_integers(0, nb_actions - 1)
+            return action
+        else:  # warming up done, rand or greedy
+            if np.random.uniform() < self.eps:
+                action = np.random.random_integers(0, nb_actions - 1)
+            else:
+                action = np.argmax(q_values)
 
         self.step += 1
         if self.step > self.decay_step:
             self.step = 0
-            if self.eps > 0.01:
-                self.eps *= 0.9
+            if self.eps > 0.05:
+                self.eps *= 0.5
 
         return action
 
@@ -65,10 +72,10 @@ model = Sequential()
 model.add(Flatten(input_shape=(1,) + env.observation_space.shape))
 model.add(Dense(4096))
 model.add(Activation('relu'))
-model.add(Dense(4096))
-model.add(Activation('relu'))
-model.add(Dense(1024))
-model.add(Activation('relu'))
+# model.add(Dense(4096))
+# model.add(Activation('relu'))
+# model.add(Dense(1024))
+# model.add(Activation('relu'))
 model.add(Dense(512))
 model.add(Activation('relu'))
 model.add(Dense(64))
@@ -83,7 +90,7 @@ print(model.summary())
 # even the metrics!
 memory = SequentialMemory(limit=50000, window_length=1)
 policy = MyPolicy(env)
-dqn = DQNAgent(model=model, nb_actions=nb_actions, memory=memory, nb_steps_warmup=10000,
+dqn = DQNAgent(model=model, nb_actions=nb_actions, memory=memory, nb_steps_warmup=1000,
                target_model_update=1e-2, policy=policy, enable_dueling_network=True)
 dqn.compile(Adam(lr=1e-4), metrics=['mae'])
 
