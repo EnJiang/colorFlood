@@ -30,41 +30,19 @@ class MyPolicy(EpsGreedyQPolicy):
         assert q_values.ndim == 1
         nb_actions = q_values.shape[0]
 
-        if self.eps > 0.05: # warming up phrase, greedy only
+        rand = np.random.uniform()
+        if 0 < rand < 0.05: # 5% rand
+            action = np.random.random_integers(0, nb_actions - 1)
+        elif 0.05 < rand < 0.15: # 10% greedy
             try:
                 action = greedy(self.env.game, 1)[0] - 1
             except:
                 action = np.random.random_integers(0, nb_actions - 1)
-        else:  # warming up done
-            rand = np.random.uniform()
-            if 0 < rand < 0.05: # 5% rand
-                action = np.random.random_integers(0, nb_actions - 1)
-            elif 0.05 < rand < 0.15: # 10% greedy
-                try:
-                    action = greedy(self.env.game, 1)[0] - 1
-                except:
-                    action = np.random.random_integers(0, nb_actions - 1)
-            else:
-                action = np.argmax(q_values)
-
-        self.step += 1
-        if self.step > self.decay_step:
-            self.step = 0
-            if self.eps > 0.05:
-                self.eps *= 0.8
+        else:
+            action = np.argmax(q_values)
 
         return action
 
-    def eps_or_rand(self, q_values):
-        try:
-            action = greedy(self.env.game, 1)[0] - 1
-        except:
-            action = None
-
-        if np.random.uniform() < 0.5 or action is None:
-            action = np.random.random_integers(0, q_values.shape[0] - 1)
-
-        return action
 
 
 ENV_NAME = 'colorflood'
@@ -75,7 +53,7 @@ nb_actions = 6
 # Next, we build a very simple model.
 
 model = Sequential()
-model.add(Conv2D(filters=128, kernel_size=(3, 3), activation="relu", input_shape=(1, ) + env.observation_space.shape,
+model.add(Conv2D(filters=128, kernel_size=(2, 2), activation="relu", input_shape=(1, ) + env.observation_space.shape,
                  data_format="channels_first"))
 # model.add(MaxPool2D(2, 2)),
 # model.add(Conv2D(filters=8, kernel_size=(3, 3),
@@ -83,8 +61,12 @@ model.add(Conv2D(filters=128, kernel_size=(3, 3), activation="relu", input_shape
 # model.add(MaxPool2D(2, 2))
 model.add(Conv2D(filters=64, kernel_size=(2, 2),
                  activation="relu", data_format="channels_first"))
+model.add(Conv2D(filters=64, kernel_size=(2, 2),
+                 activation="relu", data_format="channels_first"))
 model.add(Flatten())
-model.add(Dense(1024))
+model.add(Dense(512))
+model.add(Activation('relu'))
+model.add(Dense(64))
 model.add(Activation('relu'))
 model.add(Dense(64))
 model.add(Activation('relu'))
