@@ -35,9 +35,15 @@ class MyPolicy(EpsGreedyQPolicy):
                 action = greedy(self.env.game, 1)[0] - 1
             except:
                 action = np.random.random_integers(0, nb_actions - 1)
-        else:  # warming up done, rand or greedy
-            if np.random.uniform() < self.eps:
+        else:  # warming up done
+            rand = np.random.uniform()
+            if 0 < rand < 0.05:
                 action = np.random.random_integers(0, nb_actions - 1)
+            elif 0.05 < rand < 0.2:
+                try:
+                    action = greedy(self.env.game, 1)[0] - 1
+                except:
+                    action = np.random.random_integers(0, nb_actions - 1)
             else:
                 action = np.argmax(q_values)
 
@@ -77,8 +83,8 @@ model.add(Activation('relu'))
 # model.add(Activation('relu'))
 model.add(Dense(512))
 model.add(Activation('relu'))
-model.add(Dense(64))
-model.add(Activation('relu'))
+# model.add(Dense(64))
+# model.add(Activation('relu'))
 model.add(Dense(64))
 model.add(Activation('relu'))
 model.add(Dense(nb_actions))
