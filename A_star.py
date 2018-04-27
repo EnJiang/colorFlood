@@ -6,13 +6,15 @@ from Game import *
 from time import time
 import pymysql
 
-db = pymysql.connect(host='',
-                             port=3306,
-                             user='root',
-                             password='xxxxxxx',
-                             db='colorflood',
-                             charset='utf8')
-
+try:
+    db = pymysql.connect(host='',
+                                port=3306,
+                                user='root',
+                                password='xxxxxxx',
+                                db='colorflood',
+                                charset='utf8')
+else:
+    db = None
 
 class AStartSolver:
     def __init__(self):
@@ -43,6 +45,8 @@ class AStartSolver:
             # print(time() - start, self.counter)
 
     def save(self):
+        if db is None:
+            return
         sql = "INSERT INTO a_star_171118(init_state, step, path) VALUES(\'%s\', \'%s\', \'%s\')" % (
             self.init_state, self.lowest_f_game.step, self.lowest_f_game.allStep
         )
