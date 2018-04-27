@@ -25,7 +25,7 @@ class Env(gym.Env):
         done = game.isOver()
 
         if done and game.targetArea() == 144: # really done
-            reward = 1000 - game.step * 10
+            reward = 1000 - game.step * 5
         if done and game.targetArea() < 144:  # step overflow
             reward = game.targetArea()
         if not done:
