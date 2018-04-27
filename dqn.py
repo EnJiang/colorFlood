@@ -45,7 +45,7 @@ class MyPolicy(EpsGreedyQPolicy):
         if self.step > self.decay_step:
             self.step = 0
             if self.eps > 0.05:
-                self.eps *= 0.5
+                self.eps *= 0.8
 
         return action
 
@@ -69,7 +69,7 @@ nb_actions = 6
 # Next, we build a very simple model.
 model = Sequential()
 model.add(Flatten(input_shape=(1,) + env.observation_space.shape))
-model.add(Dense(4096))
+model.add(Dense(1024))
 model.add(Activation('relu'))
 # model.add(Dense(4096))
 # model.add(Activation('relu'))
