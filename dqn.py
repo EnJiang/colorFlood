@@ -35,7 +35,6 @@ class MyPolicy(EpsGreedyQPolicy):
                 action = greedy(self.env.game, 1)[0] - 1
             except:
                 action = np.random.random_integers(0, nb_actions - 1)
-            return action
         else:  # warming up done, rand or greedy
             if np.random.uniform() < self.eps:
                 action = np.random.random_integers(0, nb_actions - 1)
