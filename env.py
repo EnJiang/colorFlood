@@ -14,7 +14,10 @@ class Env(gym.Env):
 
     @property
     def observation_space(self):
-        return self.game.mainBorad
+        last_action = np.zeros((1, 12, 12)) - 1
+        mainBorad = np.reshape(self.game.mainBorad, (1, 12, 12))
+        ob = np.concatenate([mainBorad, last_action], axis=0)
+        return ob
 
     def step(self, action):
         game = self.game
@@ -31,11 +34,15 @@ class Env(gym.Env):
         if not done:
             reward = 0
 
-        return next_state, reward, done, {}
+        last_action = np.zeros((1, 12, 12)) + action
+        mainBorad = np.reshape(self.game.mainBorad, (1, 12, 12))
+        ob = np.concatenate([mainBorad, last_action], axis=0)
+
+        return ob, reward, done, {}
 
     def reset(self):
         self.game = Game()
-        return self.game.mainBorad
+        return self.observation_space
 
     # render environment
     def render(self, **kwargs):
