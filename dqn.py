@@ -65,13 +65,13 @@ nb_actions = 6
 board_input = Input(shape=env.observation_space.shape)
 last_action = Input(shape=(1, ))
 
-x = Conv2D(filters=64, kernel_size=(2, 2), activation="relu",
-           data_format="channels_first")(board_input)
-x = Conv2D(filters=32, kernel_size=(2, 2),
-                 activation="relu", data_format="channels_first")(x)
-x = Conv2D(filters=32, kernel_size=(2, 2),
-                 activation="relu", data_format="channels_first")(x)
-x = Flatten()(x)
+# x = Conv2D(filters=64, kernel_size=(2, 2), activation="relu",
+#            data_format="channels_first")(board_input)
+# x = Conv2D(filters=32, kernel_size=(2, 2),
+#                  activation="relu", data_format="channels_first")(x)
+# x = Conv2D(filters=32, kernel_size=(2, 2),
+#                  activation="relu", data_format="channels_first")(x)
+x = Flatten()(board_input)
 x = Dense(512, activation="relu")(x)
 x = Dense(64, activation="relu")(x)
 # x = Concatenate()([x, last_action])
