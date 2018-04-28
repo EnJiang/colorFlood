@@ -83,6 +83,12 @@ model.summary()
 
 # Finally, we configure and compile our agent. You can use every built-in Keras optimizer and
 # even the metrics!
+def compute_batch_q_values(self, state_batch):
+    batch = self.process_state_batch(state_batch)
+    q_values = self.model.predict_on_batch(batch[0])
+    assert q_values.shape == (len(state_batch), self.nb_actions)
+    return q_values
+DQNAgent.compute_batch_q_values = compute_batch_q_values
 memory=SequentialMemory(limit = 50000, window_length = 1)
 policy=MyPolicy(env)
 dqn=DQNAgent(model = model, nb_actions = nb_actions, memory = memory, nb_steps_warmup = 10000,
