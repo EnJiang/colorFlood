@@ -200,7 +200,7 @@ DQNAgent.backward = backward
 
 memory=SequentialMemory(limit = 50000, window_length = 1)
 policy=MyPolicy(env)
-dqn=DQNAgent(model = model, nb_actions = nb_actions, memory = memory, nb_steps_warmup = 100,
+dqn=DQNAgent(model = model, nb_actions = nb_actions, memory = memory, nb_steps_warmup = 10000,
             target_model_update = 1e-3, policy = policy, enable_dueling_network = False)
 dqn.compile(Adam(lr=1e-4), metrics = ['mae'])
 
