@@ -47,6 +47,3 @@ class Env(gym.Env):
     # render environment
     def render(self, **kwargs):
         pass
-
-    def observe(self):
-        return self.game.mainBorad
