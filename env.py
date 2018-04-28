@@ -14,8 +14,8 @@ class Env(gym.Env):
 
     @property
     def observation_space(self):
-        last_action = np.zeros((1, 12, 12)) - 1
-        mainBorad = np.reshape(self.game.mainBorad, (1, 12, 12))
+        last_action = (np.zeros((1, 12, 12)) + self.game.baseColor - 2.5) / 2.5
+        mainBorad = (np.reshape(self.game.mainBorad, (1, 12, 12)) - 3.5) / 3.5
         ob = np.concatenate([mainBorad, last_action], axis=0)
         return ob
 
@@ -34,8 +34,8 @@ class Env(gym.Env):
         if not done:
             reward = 0
 
-        last_action = np.zeros((1, 12, 12)) + action
-        mainBorad = np.reshape(self.game.mainBorad, (1, 12, 12))
+        last_action = (np.zeros((1, 12, 12)) + action - 2.5) / 2.5
+        mainBorad = (np.reshape(self.game.mainBorad, (1, 12, 12)) - 3.5) / 3.5
         ob = np.concatenate([mainBorad, last_action], axis=0)
 
         return ob, reward, done, {}
