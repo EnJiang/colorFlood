@@ -216,8 +216,8 @@ dqn.compile(Adam(lr=1e-4), metrics = ['mae'])
 
 if args.load:
     dqn.load_weights('dqn_{}_weights.h5f'.format(ENV_NAME))
-dqn.fit(env, nb_steps = 250000, visualize = False, verbose = 2)
-dqn.save_weights('dqn_{}_weights.h5f'.format(ENV_NAME), overwrite = True)
 
-# Finally, evaluate our algorithm for 5 episodes.
-dqn.test(env, nb_episodes = 5, visualize = False)
+while 1:
+    dqn.fit(env, nb_steps = 20000, visualize = False, verbose = 1)
+    dqn.save_weights('dqn_{}_weights.h5f'.format(ENV_NAME), overwrite = True)
+    dqn.test(env, nb_episodes = 5, visualize = False)
