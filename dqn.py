@@ -221,6 +221,6 @@ if args.load:
     dqn.load_weights('dqn_{}_weights.h5f'.format(ENV_NAME))
 
 while 1:
-    dqn.fit(env, nb_steps = 20000, visualize = False, verbose = 1)
+    dqn.fit(env, nb_steps = 200000, visualize = False, verbose = 1)
     dqn.save_weights('dqn_{}_weights.h5f'.format(ENV_NAME), overwrite = True)
     dqn.test(env, nb_episodes = 5, visualize = False)
