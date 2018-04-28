@@ -126,9 +126,9 @@ def backward(self, reward, terminal):
 
         # Prepare and validate parameters.
         state0_batch = self.process_state_batch(state0_batch)
-        state0_batch = np.reshape(state0_batch, (self.batch_size, 2, 12, 12))
+        state0_batch = np.reshape(state0_batch, (self.batch_size, 3, 12, 12))
         state1_batch = self.process_state_batch(state1_batch)
-        state1_batch = np.reshape(state1_batch, (self.batch_size, 2, 12, 12))
+        state1_batch = np.reshape(state1_batch, (self.batch_size, 3, 12, 12))
         terminal1_batch = np.array(terminal1_batch)
         reward_batch = np.array(reward_batch)
         assert reward_batch.shape == (self.batch_size,)
@@ -206,7 +206,8 @@ DQNAgent.backward = backward
 memory=SequentialMemory(limit = 50000, window_length = 1)
 policy=MyPolicy(env)
 dqn=DQNAgent(model = model, nb_actions = nb_actions, memory = memory, nb_steps_warmup = 10000,
-            target_model_update = 1e-3, policy = policy, enable_dueling_network = False)
+            target_model_update = 1e-3, policy = policy, enable_dueling_network = True,
+            enable_double_dqn=True)
 dqn.compile(Adam(lr=1e-4), metrics = ['mae'])
 
 # Okay, now it's time to learn something! We visualize the training here for show, but this
