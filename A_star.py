@@ -5,6 +5,7 @@ import copy
 from game import *
 from time import time
 import pymysql
+from concurrent.futures import ProcessPoolExecutor, as_completed
 
 try:
     db = pymysql.connect(host='',
@@ -19,7 +20,7 @@ except:
 
 class AStartSolver:
     def __init__(self):
-        self.lowest_f_game = Game()
+        self.lowest_f_game = Game(need_cal_f=True)
         self.init_state = self.lowest_f_game.hash_string()
         self.counter = 0
         self.result = 255
@@ -47,13 +48,15 @@ class AStartSolver:
 
     def save(self):
         if db is None:
-            return
+            return self.lowest_f_game.step
+
         sql = "INSERT INTO a_star_171118(init_state, step, path) VALUES(\'%s\', \'%s\', \'%s\')" % (
             self.init_state, self.lowest_f_game.step, self.lowest_f_game.allStep
         )
         curs = db.cursor()
         curs.execute(sql)
         db.commit()
+        return self.lowest_f_game.step
 
     def pop_lowest_f_game(self):
         # print(self.open)
@@ -66,7 +69,6 @@ class AStartSolver:
         return lowest_f_game
 
     def report(self):
-        return
         if self.counter % 1000 == 0:
             # if True:
             print("iteration %d, f: %f, path: %s, step:%d"
@@ -95,12 +97,19 @@ class AStartSolver:
                     self.open[f] = [copy_game]
 
 
+def one():
+    a = AStartSolver()
+    a.run()
+    return a.save()
+
+
 if __name__ == "__main__":
-    result = []
-    while 1:
-        a = AStartSolver()
-        a.run()
-        f = open("result_1.txt", "a+")
-        f.write(str(a.lowest_f_game.step) + '\n')
-        f.close()
-        # a.save()
+    result = one()
+    print(result)
+    with ProcessPoolExecutor(max_workers=5) as executor:
+            futures = [executor.submit(one) for _ in range(32)]
+            for future in as_completed(futures):
+                step = future.result()
+                f = open("result_1.txt", "a+")
+                f.write(str(step) + '\n')
+                f.close()

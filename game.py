@@ -97,7 +97,7 @@ class Spider():
 
 
 class Game():
-    def __init__(self):
+    def __init__(self, need_cal_f = False):
         # print node.__name__
         # init mainBoard
         self.mainBorad = [[0 for x in range(12)] for y in range(12)]
@@ -139,6 +139,10 @@ class Game():
         # init baseCorlor
         self.baseColor = self.mainBorad[0][0]
 
+        # calculate f value
+        self.need_cal_f = need_cal_f
+        self.cal_f()
+
     def targetArea(self):
         area = 0
         for x in range(12):
@@ -147,12 +151,27 @@ class Game():
                     area = area + 1
         return area
 
-    @property
-    def f(self):
-        colors = np.reshape(self.mainBorad, (144))
+    def cal_f(self):
+        if not self.need_cal_f:
+            return
+        board = np.reshape(self.mainBorad, (144))
         # print(colors)
-        c = Counter(colors)
-        return len(c)
+        remain_color = Counter(board)
+
+        # self.f = len(remain_color)
+        # return
+
+        smallest_manhattan_distance = 24
+        for x in range(12):
+            for y in range(12):
+                if(self.targetBoard[x][y] == 1):
+                    manhattan_distance = 11 - x + 11 - y
+                    if manhattan_distance < smallest_manhattan_distance:
+                        smallest_manhattan_distance = manhattan_distance
+
+        self.f = self.step + max(smallest_manhattan_distance, len(remain_color) - 1) + \
+            (144 - self.targetArea()) * 1.0 / 144
+
 
     def change(self, color, visual=False):
         color = int(color)
@@ -167,6 +186,7 @@ class Game():
         self.allStep += str(color)
         self.targetBoard = self.spider.targetBoard(self.mainBorad)
         # print self.targetBoard
+        self.cal_f()
 
     def isOver(self):
         if self.targetArea() == 144 or self.step > 1000:
