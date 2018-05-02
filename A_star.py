@@ -37,11 +37,11 @@ class AStartSolver:
 
             if self.lowest_f_game.isOver():
                 done = True
-                self.report()
+                # self.report()
                 self.result = self.lowest_f_game.step
             else:
                 self.counter += 1
-                self.report()
+                # self.report()
                 self.explore()
         print("done in %d path" % self.lowest_f_game.step)
         # print(time() - start, self.counter)
