@@ -4,6 +4,8 @@
   And there is a simple way to measure how well you play, which is the sum of moves your made to get a one-colored board.<br>
   [You can play it here.](http://unixpapa.com/floodit/)<br>
   Update at 2017/11/17: The problem is [proven](http://www.bris.ac.uk/news/2010/6945.html) to be NP-hard, meaning (almost...) no polynomial solution, however if a nice, namely admissible heuristic could be found, we might still get a optimal solution in acceptable time. As a result I might focus on A* algorithm from now on.
+  Update at 2018/05/02: I tried A* already and the result is fairly good. The admissible version of my heuristic is too slow, so I used a non-admissible one, but I still got result far better than greedy and myself. Unfortunately I lost the code so I will rebuild it and upload it to github.<br>
+  Also I am working on a deep leaning based approach to solve this problem.
 
 # What is this repo?
   I am trying to do several things...<br>
@@ -16,6 +18,9 @@
   Code in randomPIck.py<br>
   Pick one color randomly from all colors other than the previous one, as picking same color twice has no meaning.<br>
   The average steps is around 46.8 in 10000 tests.
-### greedy
+### Greedy
   Code in greedy.py<br>
   The code examine all possible "n depth" continious choices(let's call it a path) and pick the best path until the board is filled. For example "red green blue" would be a 3 depth path. There is no guarantee that in this way we will get a best solution, in fact in my test, the larger I set the depth the shorter path I get averagely. At depth 1 the algrithm has a average 23-step long path in 29912 tests. Pretty awsome! However greedy algrithm can not give me a optimal path with a acceptable complexity(5^n for n depth).
+### DQN
+  Code in dqn.pu
+  I tried to use Deep Q-learning to solve this problem. However, it seems that with only the board as input, full connection and convolution network can't do the job right. I tried to add more features but things still did not work out. Might use an AlphaGo like system to solve this problem in the future...
