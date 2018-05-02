@@ -104,12 +104,11 @@ def one():
 
 
 if __name__ == "__main__":
-    result = one()
-    print(result)
-    with ProcessPoolExecutor(max_workers=5) as executor:
-            futures = [executor.submit(one) for _ in range(32)]
-            for future in as_completed(futures):
-                step = future.result()
-                f = open("result_1.txt", "a+")
-                f.write(str(step) + '\n')
-                f.close()
+    while 1:
+        with ProcessPoolExecutor(max_workers=5) as executor:
+                futures = [executor.submit(one) for _ in range(32)]
+                for future in as_completed(futures):
+                    step = future.result()
+                    f = open("result_1.txt", "a+")
+                    f.write(str(step) + '\n')
+                    f.close()
