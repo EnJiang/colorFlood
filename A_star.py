@@ -2,6 +2,8 @@
 
 import random
 import copy
+from collections import namedtuple
+from bisect import insort_left, bisect_left
 from game import *
 from time import time
 import pymysql
@@ -17,6 +19,14 @@ try:
 except:
     db = None
 
+Record = namedtuple("Record", "f games")
+def __lt__(self, other):
+    if isinstance(other, Record):
+        return self.f < other.f
+    else:
+        return self.f < other
+Record.__lt__ = __lt__
+
 
 class AStartSolver:
     def __init__(self):
@@ -24,7 +34,7 @@ class AStartSolver:
         self.init_state = self.lowest_f_game.hash_string()
         self.counter = 0
         self.result = 255
-        self.open = {}
+        self.open = []
         self.close = set()
         self.explore()
 
@@ -60,11 +70,11 @@ class AStartSolver:
 
     def pop_lowest_f_game(self):
         # print(self.open)
-        lowest_f = min(self.open.keys())
-        lowest_f_game = self.open[lowest_f].pop()
+        lowest_f = self.open[0].f
+        lowest_f_game = self.open[0].games.pop()
 
-        if len(self.open[lowest_f]) == 0:
-            self.open.pop(lowest_f)
+        if len(self.open[0].games) == 0:
+            del self.open[0]
 
         return lowest_f_game
 
@@ -89,12 +99,20 @@ class AStartSolver:
 
             dupicate = copy_game.hash_string() in self.close
 
+            # print(self.open)
+
             if not dupicate:
                 f = copy_game.f
-                if f in self.open:
-                    self.open[f].append(copy_game)
+                i = bisect_left(self.open, f)
+                if not i and not len(self.open): # special case
+                    record = Record(f, [copy_game])
+                    insort_left(self.open, record)
+
+                if self.open[i].f == f:
+                    self.open[i].games.append(copy_game)
                 else:
-                    self.open[f] = [copy_game]
+                    record = Record(f, [copy_game])
+                    insort_left(self.open, record)
 
 
 def one():
@@ -104,6 +122,8 @@ def one():
 
 
 if __name__ == "__main__":
+    # one()
+    # exit()
     while 1:
         with ProcessPoolExecutor(max_workers=32) as executor:
                 futures = [executor.submit(one) for _ in range(32)]
