@@ -219,5 +219,5 @@ if __name__ == "__main__":
     while not game.isOver():
         color = random.randint(1, 6)
     #  color = int(raw_input())
-        game.change(color)
+        game.change(color, visual=True)
         game.allStep += str(color)

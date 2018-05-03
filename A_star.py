@@ -106,7 +106,7 @@ def one():
 if __name__ == "__main__":
     while 1:
         with ProcessPoolExecutor(max_workers=32) as executor:
-                futures = [executor.submit(one) for _ in range(128)]
+                futures = [executor.submit(one) for _ in range(32)]
                 for future in as_completed(futures):
                     step = future.result()
                     f = open("result_1.txt", "a+")
