@@ -116,17 +116,18 @@ class AStartSolver:
 
 
 def one():
-    while 1:
-        a = AStartSolver()
-        a.run()
-        step = a.save()
-        f = open("result_1.txt", "a+")
-        f.write(str(step) + '\n')
-        f.close()
+    a = AStartSolver()
+    a.run()
+    step = a.save()
+    f = open("result_1.txt", "a+")
+    f.write(str(step) + '\n')
+    f.close()
 
+def loop():
+    while 1:
+        one()
 
 if __name__ == "__main__":
-    while 1:
-        with ProcessPoolExecutor(max_workers=4) as executor:
-            for _ in range(4):
-                executor.submit(one)
+    executor = ProcessPoolExecutor(max_workers=4)
+    for _ in range(8):
+        executor.submit(loop)
