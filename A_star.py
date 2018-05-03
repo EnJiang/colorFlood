@@ -119,15 +119,12 @@ def one():
     a = AStartSolver()
     a.run()
     step = a.save()
-    f = open("result_1.txt", "a+")
+    f = open("result_a_star.txt", "a+")
     f.write(str(step) + '\n')
     f.close()
 
-def loop():
-    while 1:
-        one()
 
 if __name__ == "__main__":
-    executor = ProcessPoolExecutor(max_workers=4)
+    executor = ProcessPoolExecutor(max_workers=8)
     for _ in range(8):
-        executor.submit(loop)
+        executor.submit(one)
