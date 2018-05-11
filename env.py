@@ -17,11 +17,22 @@ class Env(gym.Env):
         return self.obs(self.game.baseColor)
 
     def obs(self, color):
+        features = []
+
         last_action = (np.zeros((1, 12, 12)) + color - 2.5) / 2.5
+        features.append(last_action)
+
         mainBorad = (np.reshape(self.game.mainBorad, (1, 12, 12)) - 3.5) / 3.5
+        features.append(mainBorad)
+
         diff = self.game.mainBorad - color
         diff = np.reshape(diff, (1, 12, 12)) / 10
-        ob = np.concatenate([mainBorad, last_action, diff], axis=0)
+        features.append(diff)
+
+        target_board = np.reshape(self.game.targetBoard, (1, 12, 12))
+        features.append(target_board)
+
+        ob = np.concatenate(features, axis=0)
         return ob
 
     def step(self, action):

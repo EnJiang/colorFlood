@@ -46,7 +46,7 @@ class MyPolicy(EpsGreedyQPolicy):
             action = np.random.random_integers(0, nb_actions - 1)
             if DEBUG:
                 print("rand")
-        elif 0.05 < rand < 0.15:  # 10% greedy
+        elif 0.05 < rand < 0.1:  # 5% greedy
             if DEBUG:
                 print("geedy")
             try:
@@ -58,6 +58,7 @@ class MyPolicy(EpsGreedyQPolicy):
                 print("net")
             action = np.argmax(q_values)
 
+        # self.step += 1
         return action
 
 ENV_NAME = 'colorflood'
@@ -70,15 +71,17 @@ nb_actions = 6
 board_input = Input(shape=env.observation_space.shape)
 last_action = Input(shape=(1, ))
 
-# x = Conv2D(filters=128, kernel_size=(2, 2), activation="tanh",
-#            data_format="channels_first")(board_input)
-# x = Conv2D(filters=64, kernel_size=(2, 2),
-#                  activation="tanh", data_format="channels_first")(x)
-# x = Conv2D(filters=64, kernel_size=(2, 2),
-#            activation="tanh", data_format="channels_first")(x)
-x = Flatten()(board_input)
+x = Conv2D(filters=512, kernel_size=(2, 2), activation="tanh",
+           data_format="channels_first")(board_input)
+x = Conv2D(filters=512, kernel_size=(2, 2),
+                 activation="tanh", data_format="channels_first")(x)
+x = MaxPooling2D((2, 2), data_format="channels_first")
+x = Conv2D(filters=64, kernel_size=(2, 2),
+           activation="tanh", data_format="channels_first")(x)
+# x = Flatten()(board_input)
+x = Flatten()(x)
+x = Dense(2048, activation="tanh")(x)
 x = Dense(1024, activation="tanh")(x)
-x = Dense(512, activation="tanh")(x)
 x = Dense(512, activation="tanh")(x)
 x = Dense(512, activation="tanh")(x)
 x = Dense(64, activation="tanh")(x)
@@ -95,7 +98,6 @@ def compute_q_values(self, state):
     q_values = self.compute_batch_q_values(state).flatten()
     assert q_values.shape == (self.nb_actions,)
     return q_values
-
 
 def backward(self, reward, terminal):
     # Store most recent experience in memory.

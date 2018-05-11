@@ -52,7 +52,6 @@ class Node():
                 break
         return check
 
-
 class Spider():
     def __init__(self, board):
         # 定义链表,初始化蜘蛛在左上角第一个点
@@ -94,7 +93,6 @@ class Spider():
         for n in self.link:
             targetBoard[n.x][n.y] = 1
         return targetBoard
-
 
 class Game():
     def __init__(self, need_cal_f = False):
@@ -211,7 +209,6 @@ class Game():
             for y in range(12):
                 output += str(self.mainBorad[x][y])
         return output
-
 
 if __name__ == "__main__":
     game = Game()
