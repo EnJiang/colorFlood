@@ -135,9 +135,9 @@ def backward(self, reward, terminal):
 
         # Prepare and validate parameters.
         state0_batch = self.process_state_batch(state0_batch)
-        state0_batch = np.reshape(state0_batch, (self.batch_size, 3, 12, 12))
+        state0_batch = np.reshape(state0_batch, (self.batch_size, ) + env.observation_space.shape)
         state1_batch = self.process_state_batch(state1_batch)
-        state1_batch = np.reshape(state1_batch, (self.batch_size, 3, 12, 12))
+        state1_batch = np.reshape(state1_batch, (self.batch_size, ) + env.observation_space.shape)
         terminal1_batch = np.array(terminal1_batch)
         reward_batch = np.array(reward_batch)
         assert reward_batch.shape == (self.batch_size,)
