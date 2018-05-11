@@ -48,6 +48,7 @@ class MyPolicy(EpsGreedyQPolicy):
 
         if self.step < warm_up_step:
             action = greedy(self.env.game, 1)[0] - 1
+            self.step += 1
             return action
 
         rand = random.random()
@@ -67,7 +68,6 @@ class MyPolicy(EpsGreedyQPolicy):
                 print("net")
             action = np.argmax(q_values)
 
-        self.step += 1
         return action
 
 ENV_NAME = 'colorflood'
