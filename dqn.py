@@ -75,7 +75,7 @@ x = Conv2D(filters=512, kernel_size=(2, 2), activation="tanh",
            data_format="channels_first")(board_input)
 x = Conv2D(filters=512, kernel_size=(2, 2),
                  activation="tanh", data_format="channels_first")(x)
-x = MaxPooling2D((2, 2), data_format="channels_first")
+x = MaxPooling2D((2, 2), data_format="channels_first")(x)
 x = Conv2D(filters=64, kernel_size=(2, 2),
            activation="tanh", data_format="channels_first")(x)
 # x = Flatten()(board_input)
