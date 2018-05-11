@@ -1,6 +1,9 @@
 import numpy as np
 import gym
 
+import os
+os.environ["CUDA_VISIBLE_DEVICES"] = "0"
+
 from keras.models import Model, Sequential
 from keras.layers import *
 from keras.optimizers import Adam
@@ -16,6 +19,7 @@ from greedy import greedy
 import random
 
 import argparse
+
 
 parser = argparse.ArgumentParser()
 parser.add_argument('load', type=int, help='load file or not', default=0)
