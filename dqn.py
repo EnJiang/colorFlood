@@ -26,6 +26,7 @@ parser.add_argument('load', type=int, help='load file or not', default=0)
 args = parser.parse_args()
 DEBUG = False
 
+warm_up_step = 20000
 
 class MyPolicy(EpsGreedyQPolicy):
     def __init__(self, env, eps=.5):
@@ -45,6 +46,10 @@ class MyPolicy(EpsGreedyQPolicy):
         assert q_values.ndim == 1
         nb_actions = q_values.shape[0]
 
+        if self.step < warm_up_step:
+            action = greedy(self.env.game, 1)[0] - 1
+            return action
+
         rand = random.random()
         if 0 < rand < 0.05:  # 5% rand
             action = np.random.random_integers(0, nb_actions - 1)
@@ -62,7 +67,7 @@ class MyPolicy(EpsGreedyQPolicy):
                 print("net")
             action = np.argmax(q_values)
 
-        # self.step += 1
+        self.step += 1
         return action
 
 ENV_NAME = 'colorflood'
@@ -214,7 +219,7 @@ DQNAgent.backward = backward
 
 memory=SequentialMemory(limit = 50000, window_length = 1)
 policy=MyPolicy(env)
-dqn=DQNAgent(model = model, nb_actions = nb_actions, memory = memory, nb_steps_warmup = 10000,
+dqn=DQNAgent(model = model, nb_actions = nb_actions, memory = memory, nb_steps_warmup = warm_up_step,
             target_model_update = 1e-3, policy = policy, enable_dueling_network = True,
             enable_double_dqn=True)
 dqn.compile(Adam(lr=1e-4), metrics = ['mae'])
