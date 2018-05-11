@@ -46,7 +46,7 @@ def greedy(game, depth):
             color = aTry
     # print improveEach
     for iEIndex in range(depth):
-        if(improveEach[depth - iEIndex - 1] == 0):
+        if(improveEach[depth - iEIndex - 1] == 0 and len(color) != 1):
             del color[depth - iEIndex - 1]
     # print color
     return color
