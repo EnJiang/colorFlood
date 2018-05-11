@@ -4,7 +4,7 @@ from game import *
 # import MySQLdb
 import copy
 import time
-
+from math import inf
 
 def toTry(depth):
     tryList = [[] for x in range(pow(6, depth))]
@@ -29,7 +29,7 @@ def toTry(depth):
 
 
 def greedy(game, depth):
-    improve = 0
+    improve = -inf
     area = game.targetArea()
     tryList = toTry(depth)
     for aTry in tryList:
