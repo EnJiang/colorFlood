@@ -53,10 +53,10 @@ def greedy(game, depth):
 
 if __name__ == "__main__":
     result = []
-    depth = 1
+    depth = 4
     while 1:
         start_time = time.time()
-        game = Game()
+        game = Game(size=6)
         init = game.hash_string()
         while not game.isOver():
             color = greedy(game, depth)
@@ -68,6 +68,7 @@ if __name__ == "__main__":
                     break
         step = len(game.allStep)
         allStep = game.allStep
+        print(step, end=',')
         # print "use",step,"step:",allStep
 
         result.append(step)

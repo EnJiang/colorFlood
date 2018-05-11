@@ -30,7 +30,7 @@ Record.__lt__ = __lt__
 
 class AStartSolver:
     def __init__(self):
-        self.lowest_f_game = Game(need_cal_f=True)
+        self.lowest_f_game = Game(need_cal_f=True, size=6)
         self.init_state = self.lowest_f_game.hash_string()
         self.counter = 0
         self.result = 255
@@ -103,28 +103,21 @@ class AStartSolver:
 
             if not dupicate:
                 f = copy_game.f
-                i = bisect_left(self.open, f)
-                if not i and not len(self.open): # special case
-                    record = Record(f, [copy_game])
-                    insort_left(self.open, record)
-
-                if self.open[i].f == f:
-                    self.open[i].games.append(copy_game)
-                else:
-                    record = Record(f, [copy_game])
-                    insort_left(self.open, record)
-
+                record = Record(f, [copy_game])
+                insort_left(self.open, record)
 
 def one():
     a = AStartSolver()
     a.run()
     step = a.save()
-    f = open("result_a_star.txt", "a+")
-    f.write(str(step) + '\n')
-    f.close()
+    # f = open("result_a_star.txt", "a+")
+    # f.write(str(step) + '\n')
+    # f.close()
 
 
 if __name__ == "__main__":
-    executor = ProcessPoolExecutor(max_workers=8)
-    for _ in range(8):
-        executor.submit(one)
+    # executor = ProcessPoolExecutor(max_workers=8)
+    # for _ in range(8):
+    #     executor.submit(one)
+    while 1:
+        one()

@@ -15,9 +15,10 @@ class Node():
         # 确定下一个探索点,进入下一个状态
         x, y = self.x, self.y
         check = None
-        if(self.status == 1 and self.x != 11):
+        size = len(board)
+        if(self.status == 1 and self.x != size - 1):
             check = [x + 1, y]
-        if(self.status == 2 and self.y != 11):
+        if(self.status == 2 and self.y != size - 1):
             check = [x, y + 1]
         if(self.status == 3 and self.x != 0):
             check = [x - 1, y]
@@ -95,18 +96,23 @@ class Spider():
         return targetBoard
 
 class Game():
-    def __init__(self, need_cal_f = False):
+    def __init__(self, need_cal_f = False, size = 12):
         # print node.__name__
         # init mainBoard
-        self.mainBorad = [[0 for x in range(12)] for y in range(12)]
+        self.size = size
+        point_num = self.point_num = size * size
+        if point_num % 6 != 0:
+            raise("size * size can not devide 6!")
+
+        self.mainBorad = [[0 for x in range(size)] for y in range(size)]
         posList = []
-        for x in range(12):
-            for y in range(12):
+        for x in range(size):
+            for y in range(size):
                 posList.append([x, y])
         color = 1
-        left = 143
+        left = point_num - 1
         for x in range(6):
-            for y in range(24):
+            for y in range(point_num // 6):
                 k = random.randint(0, left)
                 i, j = posList[k]
                 self.mainBorad[i][j] = color
@@ -118,8 +124,8 @@ class Game():
 
         # init start
         self.start = ''
-        for x in range(12):
-            for y in range(12):
+        for x in range(size):
+            for y in range(size):
                 self.start += str(self.mainBorad[x][y])
 
         # init all step
@@ -143,8 +149,8 @@ class Game():
 
     def targetArea(self):
         area = 0
-        for x in range(12):
-            for y in range(12):
+        for x in range(self.size):
+            for y in range(self.size):
                 if(self.targetBoard[x][y]):
                     area = area + 1
         return area
@@ -152,31 +158,31 @@ class Game():
     def cal_f(self):
         if not self.need_cal_f:
             return
-        board = np.reshape(self.mainBorad, (144))
+        board = np.reshape(self.mainBorad, (self.point_num))
         # print(colors)
         remain_color = Counter(board)
 
         # self.f = len(remain_color)
         # return
 
-        smallest_manhattan_distance = 24
-        for x in range(12):
-            for y in range(12):
+        smallest_manhattan_distance = self.size * 2
+        for x in range(self.size):
+            for y in range(self.size):
                 if(self.targetBoard[x][y] == 1):
-                    manhattan_distance = 11 - x + 11 - y
+                    manhattan_distance = self.size - 1 - x + self.size - 1 - y
                     if manhattan_distance < smallest_manhattan_distance:
                         smallest_manhattan_distance = manhattan_distance
 
         self.f = self.step + max(smallest_manhattan_distance, len(remain_color) - 1) + \
-            (144 - self.targetArea()) * 1.0 / 144
+            (144 - self.targetArea()) * 1.0 / self.point_num
 
 
     def change(self, color, visual=False):
         color = int(color)
         self.baseColor = color
         self.step = self.step + 1
-        for x in range(12):
-            for y in range(12):
+        for x in range(self.size):
+            for y in range(self.size):
                 if(self.targetBoard[x][y] == 1):
                     self.mainBorad[x][y] = color
         if visual:
@@ -187,16 +193,16 @@ class Game():
         self.cal_f()
 
     def isOver(self):
-        if self.targetArea() == 144 or self.step > 1000:
+        if self.targetArea() == self.point_num or self.step > self.size * 10:
             return True
         else:
             return False
 
     def __str__(self):
         output = ''
-        for x in range(12):
-            for y in range(12):
-                if (y != 11):
+        for x in range(self.size):
+            for y in range(self.size):
+                if (y != self.size - 1):
                     output += str(self.mainBorad[x][y]) + "  "
                 else:
                     output += str(self.mainBorad[x][y])
@@ -205,16 +211,16 @@ class Game():
 
     def hash_string(self):
         output = ''
-        for x in range(12):
-            for y in range(12):
+        for x in range(self.size):
+            for y in range(self.size):
                 output += str(self.mainBorad[x][y])
         return output
 
 if __name__ == "__main__":
-    game = Game()
+    game = Game(size=6)
 
     while not game.isOver():
         color = random.randint(1, 6)
     #  color = int(raw_input())
         game.change(color, visual=True)
-        game.allStep += str(color)
+    print(len(game.allStep), game.allStep)
