@@ -74,9 +74,10 @@ class Spider():
 
     def targetBoard(self, board):
         # 定义链表,初始化蜘蛛在左上角第一个点
+        size = len(board)
         self.link = [Node([0, 0], None)]
         self.spider = self.link[0]
-        targetBoard = [[0 for x in range(12)] for y in range(12)]
+        targetBoard = [[0 for x in range(size)] for y in range(size)]
         self.clean()
         next = self.spider.next(board, self.link)
         # 只要不是spider在原点且检查完了所有方向(这意味着整个棋盘已经检查完毕),就继续检查

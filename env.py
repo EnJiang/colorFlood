@@ -5,8 +5,9 @@ import numpy as np
 from game import Game
 
 class Env(gym.Env):
-    def __init__(self):
-        self.game = Game()
+    def __init__(self, size=12):
+        self.size = size
+        self.game = Game(size=size)
 
     @property
     def action_space(self):
@@ -17,25 +18,28 @@ class Env(gym.Env):
         return self.obs(self.game.baseColor)
 
     def obs(self, color):
+        size = self.size
+
         features = []
 
-        last_action = (np.zeros((1, 12, 12)) + color - 2.5) / 2.5
+        last_action = (np.zeros((1, size, size)) + color - 2.5) / 2.5
         features.append(last_action)
 
-        mainBorad = (np.reshape(self.game.mainBorad, (1, 12, 12)) - 3.5) / 3.5
+        mainBorad = (np.reshape(self.game.mainBorad, (1, size, size)) - 3.5) / 3.5
         features.append(mainBorad)
 
         diff = self.game.mainBorad - color
-        diff = np.reshape(diff, (1, 12, 12)) / 10
+        diff = np.reshape(diff, (1, size, size)) / 10
         features.append(diff)
 
-        target_board = np.reshape(self.game.targetBoard, (1, 12, 12))
+        target_board = np.reshape(self.game.targetBoard, (1, size, size))
         features.append(target_board)
 
         ob = np.concatenate(features, axis=0)
         return ob
 
     def step(self, action):
+        info = {}
         game = self.game
 
         game.change(action + 1)
@@ -43,19 +47,21 @@ class Env(gym.Env):
         next_state = game.mainBorad
         done = game.isOver()
 
-        if done and game.targetArea() == 144: # really done
+        if done and game.targetArea() == game.point_num: # really done
             reward = 1000 - game.step * 5
-        if done and game.targetArea() < 144:  # step overflow
+            info["overflow"] = False
+        if done and game.targetArea() < game.point_num:  # step overflow
             reward = game.targetArea()
+            info["overflow"] = True
         if not done:
             reward = 0
 
         ob = self.obs(action)
 
-        return ob, reward, done, {}
+        return ob, reward, done, info
 
     def reset(self):
-        self.game = Game()
+        self.game = Game(size=self.size)
         return self.observation_space
 
     # render environment
