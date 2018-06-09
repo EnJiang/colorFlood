@@ -5,8 +5,8 @@ import torch.optim as optim
 import torch.nn as nn
 
 if __name__ == "__main__":
-    filename = generate_greedy(data_num=1000)
-    data_set = MyDataset("./data/greedy_1/%s" % filename)
+    # filename = generate_greedy(data_num=1000)
+    data_set = MyDataset("./1528531033.npz")
 
     model = ResNet18().cuda()
     model.train()
