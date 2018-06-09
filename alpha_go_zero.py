@@ -35,7 +35,7 @@ if __name__ == "__main__":
             loss.backward()
             optimizer.step()
 
-            train_loss += loss
+            train_loss += loss.item()
         
-        print(train_loss / 40765)
+        print(train_loss / 5095)
         torch.save(model, "pre_cnn.pkl")
