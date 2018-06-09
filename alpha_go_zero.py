@@ -29,6 +29,8 @@ def validate(model):
 
         next_obs, reward, done, _ = e.step(action_greedy)
         obs = next_obs
+        obs = np.reshape(obs, (1, 4, 6, 6))
+        obs = torch.FloatTensor(obs).cuda()
     print("\n\n\n\n\n\n")
 
 
