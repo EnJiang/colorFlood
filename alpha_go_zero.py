@@ -4,6 +4,6 @@ import numpy as np
 
 
 if __name__ == "__main__":
-    filename = generate_greedy()
+    filename = generate_greedy(data_num=1000)
     data_set = MyDataset("./data/greedy_1/%s" % filename)
     model = ResNet18()
