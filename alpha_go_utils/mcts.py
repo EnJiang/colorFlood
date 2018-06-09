@@ -41,7 +41,9 @@ class Node(object):
         return self.__repr__()
 
 class MCTS(object):
-    def __init__(self, root_node, net):
+    def __init__(self, root_node, net=None, use_nn=False):
+        assert not (net is None and use_nn == True)
+        self.use_nn = use_nn
         self.net = net
         self.tree = dict()
         self.tree[hash(root_node)] = root_node
@@ -68,9 +70,10 @@ class MCTS(object):
         self.back_prop(chian, v)
 
     def all_children_in_tree(self, root):
+        keys = self.tree.keys()
         return all(
             map(
-                lambda x: x in self.tree.keys(),
+                lambda x: x in keys,
                 root.children_hash_list
             )
         )
@@ -94,9 +97,16 @@ class MCTS(object):
         return self.tree[child_hash], child_index
 
     def predict_value(self, game):
-        pass
+        if self.use_nn:
+            result = self.net(game.obs)
+            return result[0]
 
     def predict_policy(self, game):
+        if self.use_nn:
+            result = self.net(game.obs)
+            return result[: -1]
+
+    def back_prop(self, chain, v):
         pass
 
     @property

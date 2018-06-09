@@ -2,12 +2,25 @@ from env import Env
 from greedy import greedy
 from time import time
 import numpy as np
+from torch.utils.data import Dataset
+from tqdm import tqdm
+
+class MyDataset(Dataset):  # 需要继承torch.utils.data.Dataset
+    def __init__(self, filename):
+        self.tdata = np.load(filename)
+
+    def __getitem__(self, index):
+        return self.tdata["xs"][index], self.tdata["ys"][index]
+        pass
+
+    def __len__(self):
+        return len(self.tdata)
 
 def generate_greedy(file_dir='./data/greedy_1', data_num=10000):
     xs = []
     ys = []
     e = Env(size=6)
-    for _ in range(data_num):
+    for _ in tqdm(range(data_num)):
         obs_chain = []
         action_chain = []
 
