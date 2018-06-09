@@ -26,7 +26,7 @@ if __name__ == "__main__":
         train_loss = 0
         correct = 0
         total = 0
-        for batch_idx, (inputs, targets) in tqdm(enumerate(zip(xs, ys), total=40765)):
+        for batch_idx, (inputs, targets) in tqdm(enumerate(zip(xs, ys)), total=5095):
             inputs, targets = torch.FloatTensor(inputs), torch.FloatTensor(targets)
             inputs, targets = inputs.cuda(), targets.cuda()
             optimizer.zero_grad()
