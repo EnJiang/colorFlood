@@ -31,6 +31,8 @@ if __name__ == "__main__":
     model = torch.load("pre_cnn.pkl").cuda()
     model.train()
 
+    validate(model)
+
     criterion = nn.MSELoss()
     optimizer = optim.SGD(model.parameters(), lr=1e-3,
                         momentum=0.9, weight_decay=5e-4)
