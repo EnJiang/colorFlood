@@ -2,19 +2,11 @@ from env import Env
 from greedy import greedy
 from time import time
 import numpy as np
+import torch
 from torch.utils.data import Dataset
+from torch.autograd import Variable
 from tqdm import tqdm
 
-class MyDataset(Dataset):  # 需要继承torch.utils.data.Dataset
-    def __init__(self, filename):
-        self.tdata = np.load(filename)
-
-    def __getitem__(self, index):
-        return self.tdata["xs"][index], self.tdata["ys"][index]
-        pass
-
-    def __len__(self):
-        return len(self.tdata)
 
 def generate_greedy(file_dir='./', data_num=10000):
     xs = []

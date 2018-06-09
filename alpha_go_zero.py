@@ -1,14 +1,19 @@
 from alpha_go_utils.data import *
-from alpha_go_utils.resnet import ResNet18
+from alpha_go_utils.network import ConvNet
 import numpy as np
 import torch.optim as optim
 import torch.nn as nn
+from tqdm import tqdm
 
 if __name__ == "__main__":
     # filename = generate_greedy(data_num=1000)
-    data_set = MyDataset("./1528531033.npz")
+    tdata = np.load("./1528531033.npz")
+    xs = tdata["xs"]
+    ys = tdata["ys"]
+    xs = np.reshape(xs, (1305, 10, 4, 6, 6))
+    ys = np.reshape(ys, (1305, 10, 7))
 
-    model = ResNet18().cuda()
+    model = ConvNet().cuda()
     model.train()
 
     criterion = nn.MSELoss()
@@ -18,7 +23,8 @@ if __name__ == "__main__":
     train_loss = 0
     correct = 0
     total = 0
-    for batch_idx, (inputs, targets) in enumerate(data_set):
+    for batch_idx, (inputs, targets) in tqdm(enumerate(zip(xs, ys))):
+        inputs, targets = torch.FloatTensor(inputs), torch.FloatTensor(targets)
         inputs, targets = inputs.cuda(), targets.cuda()
         optimizer.zero_grad()
         outputs = model(inputs)
@@ -27,6 +33,4 @@ if __name__ == "__main__":
         optimizer.step()
 
         train_loss += loss.item()
-        _, predicted = outputs.max(1)
-        total += targets.size(0)
-        correct += predicted.eq(targets).sum().item()
+    print(train_loss)
