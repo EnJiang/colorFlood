@@ -11,7 +11,7 @@ if __name__ == "__main__":
     model = ResNet18().cuda()
     model.train()
 
-    criterion = nn.MSE()
+    criterion = nn.MSELoss()
     optimizer = optim.SGD(model.parameters(), lr=1e-3,
                         momentum=0.9, weight_decay=5e-4)
 
