@@ -4,6 +4,18 @@ import numpy as np
 import torch.optim as optim
 import torch.nn as nn
 from tqdm import tqdm
+from env import Env
+
+def validate(model):
+    e = Env(size=6)
+    done = False
+    obs = e.reset()
+    obs = np.reshape(obs, (1, 4, 6, 6))
+    obs = torch.FloatTensor(obs)
+    while not done:
+        action = greedy(e.game, 1)[0] - 1
+        next_obs, reward, done, _ = e.step(action)
+        obs = next_obs
 
 if __name__ == "__main__":
     # filename = generate_greedy(data_num=100000)
@@ -15,7 +27,8 @@ if __name__ == "__main__":
     xs = np.reshape(xs, (5095, 256, 4, 6, 6))
     ys = np.reshape(ys, (5095, 256, 7))
 
-    model = ConvNet().cuda()
+    # model = ConvNet().cuda()
+    model = torch.load("pre_cnn.pkl").cuda()
     model.train()
 
     criterion = nn.MSELoss()
@@ -39,3 +52,4 @@ if __name__ == "__main__":
         
         print(train_loss / 5095)
         torch.save(model, "pre_cnn.pkl")
+        validate(model)
