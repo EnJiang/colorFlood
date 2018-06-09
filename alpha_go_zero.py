@@ -6,16 +6,31 @@ import torch.nn as nn
 from tqdm import tqdm
 from env import Env
 
+
 def validate(model):
+    print("\n\n\n\n\n\n")
+    print("--------validating--------")
     e = Env(size=6)
     done = False
     obs = e.reset()
     obs = np.reshape(obs, (1, 4, 6, 6))
-    obs = torch.FloatTensor(obs)
+    obs = torch.FloatTensor(obs).cuda()
     while not done:
-        action = greedy(e.game, 1)[0] - 1
-        next_obs, reward, done, _ = e.step(action)
+        output = model(obs)
+        output = output.cpu().data.numpy()[0]
+        pi = output[: 6]
+        a = output[-1]
+
+        action_greedy = greedy(e.game, 1)[0] - 1
+        action_pi = np.argmax(pi)
+
+        print(e.game)
+        print(action_greedy, action_pi)
+
+        next_obs, reward, done, _ = e.step(action_greedy)
         obs = next_obs
+    print("\n\n\n\n\n\n")
+
 
 if __name__ == "__main__":
     # filename = generate_greedy(data_num=100000)
@@ -37,7 +52,7 @@ if __name__ == "__main__":
     optimizer = optim.SGD(model.parameters(), lr=1e-3,
                         momentum=0.9, weight_decay=5e-4)
 
-    for _ in range(100):
+    for epoch in range(100):
         train_loss = 0
         correct = 0
         total = 0
@@ -54,4 +69,6 @@ if __name__ == "__main__":
         
         print(train_loss / 5095)
         torch.save(model, "pre_cnn.pkl")
-        validate(model)
+
+        if epoch % 3 == 2:
+            validate(model)
