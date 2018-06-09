@@ -16,7 +16,7 @@ class MyDataset(Dataset):  # 需要继承torch.utils.data.Dataset
     def __len__(self):
         return len(self.tdata)
 
-def generate_greedy(file_dir='./data/greedy_1', data_num=10000):
+def generate_greedy(file_dir='./', data_num=10000):
     xs = []
     ys = []
     e = Env(size=6)
