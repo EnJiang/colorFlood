@@ -7,6 +7,29 @@ from torch.utils.data import Dataset
 from torch.autograd import Variable
 from tqdm import tqdm
 
+class MyDataset(Dataset):
+    """Face Landmarks dataset."""
+
+    def __init__(self, x, y, transform=None):
+        """
+        Args:
+            csv_file (string): Path to the csv file with annotations.
+            root_dir (string): Directory with all the images.
+            transform (callable, optional): Optional transform to be applied
+                on a sample.
+        """
+        self.x = x
+        self.y = y
+
+    def __len__(self):
+        return len(self.x)
+
+    def __getitem__(self, idx):
+        sample = (
+            torch.FloatTensor(self.x[idx]),
+            torch.FloatTensor(self.y[idx])
+        )
+        return sample
 
 def generate_greedy(file_dir='./', data_num=10000):
     xs = []

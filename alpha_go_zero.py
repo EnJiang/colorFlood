@@ -5,7 +5,7 @@ import torch.optim as optim
 import torch.nn as nn
 from tqdm import tqdm
 from env import Env
-
+from torch.utils.data import DataLoader
 
 def validate(model):
     print("\n\n\n\n\n\n")
@@ -36,19 +36,18 @@ def validate(model):
 
 if __name__ == "__main__":
     # filename = generate_greedy(data_num=100000)
-    tdata = np.load("./1528540963.npz")
+    tdata = np.load("./1528531033.npz")
     xs = tdata["xs"]
     ys = tdata["ys"]
-    xs = xs[: 1304320]
-    ys = ys[: 1304320]
-    xs = np.reshape(xs, (5095, 256, 4, 6, 6))
-    ys = np.reshape(ys, (5095, 256, 7))
 
-    # model = ConvNet().cuda()
-    model = torch.load("pre_cnn.pkl").cuda()
+    data_set = MyDataset(xs, ys)
+    dataloader = DataLoader(data_set, batch_size=32, shuffle=True)
+
+    model = ConvNet().cuda()
+    # model = torch.load("pre_cnn.pkl").cuda()
     model.train()
 
-    validate(model)
+    # validate(model)
 
     criterion = nn.MSELoss()
     optimizer = optim.SGD(model.parameters(), lr=1e-3,
@@ -58,8 +57,9 @@ if __name__ == "__main__":
         train_loss = 0
         correct = 0
         total = 0
-        for batch_idx, (inputs, targets) in tqdm(enumerate(zip(xs, ys)), total=5095):
-            inputs, targets = torch.FloatTensor(inputs), torch.FloatTensor(targets)
+        for batch_idx, sample in tqdm(enumerate(dataloader), total=len(data_set) // 32):
+            # print(type(sample))
+            inputs, targets = sample[0], sample[1]
             inputs, targets = inputs.cuda(), targets.cuda()
             optimizer.zero_grad()
             outputs = model(inputs)
