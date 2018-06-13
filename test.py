@@ -1,11 +1,32 @@
 import torch
+from torch.utils.data import DataLoader
+
 import numpy as np
 
 from env import Env
 from greedy import greedy
 
+from torch.utils.data import DataLoader
+from alpha_go_utils.data import MyDataset
+
 if __name__ == "__main__":
     model = torch.load("pre_cnn.pkl").cuda()
+    vxs = np.load(open("vxs.npy", "rb"))
+    vys = np.load(open("vys.npy", "rb"))
+    vset = MyDataset(vxs, vys)
+    vdataloader = DataLoader(vset, batch_size=8, shuffle=False)
+
+    model.eval()
+    loss = 0
+    for batch_idx, sample in enumerate(vdataloader):
+        # print(type(sample))
+        inputs, targets = sample[0], sample[1]
+        inputs, targets = inputs.cuda(), targets.cuda()
+        outputs = model(inputs)
+        print(outputs)
+        print(targets)
+
+
 
     e = Env(size=6)
     done = False
