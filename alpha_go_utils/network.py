@@ -23,12 +23,12 @@ class ConvNet(nn.Module):
             nn.Conv2d(512, 512, kernel_size=3, padding=1),
             nn.BatchNorm2d(512),
             nn.ReLU(),
-            nn.Conv2d(512, 512, kernel_size=3),
+            nn.Conv2d(512, 256, kernel_size=3),
             nn.ReLU(),
-            nn.MaxPool2d(kernel_size=2, stride=2))
-        self.fc1 = nn.Linear(512, 512)
-        self.fc2 = nn.Linear(512, 512)
-        self.fc3 = nn.Linear(512, output_shape)
+            nn.MaxPool2d(kernel_size=2))
+        self.fc1 = nn.Linear(2048, 2048)
+        self.fc2 = nn.Linear(2048, 2048)
+        self.fc3 = nn.Linear(2048, output_shape)
         self.relu1 = nn.ReLU()
         self.relu2 = nn.ReLU()
         self.relu3 = nn.ReLU()
