@@ -63,13 +63,14 @@ class Node(object):
         return self.__repr__()
 
 class MCTS(object):
-    def __init__(self, root_node, net=None, use_nn=False):
+    def __init__(self, root_node, net=None, use_nn=False, size=6):
         assert not (net is None and use_nn == True)
         self.use_nn = use_nn
         self.net = net
         self.tree = dict()
         self.tree[hash(root_node)] = root_node
         self.root_node = root_node
+        self.size = size
 
     def run(self, root):
         if self.all_children_in_tree(root):
@@ -107,7 +108,7 @@ class MCTS(object):
     def select_and_create_nonexist_child(self, root):
         if self.all_children_in_tree(root):
             raise ValueError("All children in tree!")
-        for i in range(6):
+        for i in range(self.size):
             if root.children_hash_list[i] not in self.tree.keys():
                 action = i + 1
                 tmp_game = deepcopy(root.game)
@@ -123,15 +124,27 @@ class MCTS(object):
         child_hash = root.children_hash_list[child_index]
         return self.tree[child_hash], child_index
 
+    def network_forward(self, game):
+        obs = game.obs
+        obs = np.reshape(obs, (1, ) + obs.shape)
+        obs = torch.FloatTensor(obs).cuda()
+        output = self.net(obs)
+        output = output.cpu().data.numpy()[0]
+        return output
+
     def predict_value(self, game):
         if self.use_nn:
-            result = self.net(game.obs)
-            return result[0]
+            output = self.network_forward(game)
+            return output[: self.size]
+        else:
+            return [0 for _ in range(self.size)]
+
 
     def predict_policy(self, game):
         if self.use_nn:
-            result = self.net(game.obs)
-            return result[: -1]
+            output = self.network_forward(game)
+            return output[-1]
+        return game.targetArea() // (self.size ** 2)
 
     def back_prop(self, chain, v):
         for node, action_index in chain:
@@ -146,3 +159,8 @@ class MCTS(object):
         output = output.cpu().data.numpy()[0]
         pi = output[: 6]
         return pi
+
+
+if __name__ == "__main__":
+    # test here
+    pass

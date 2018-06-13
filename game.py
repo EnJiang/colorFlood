@@ -77,7 +77,8 @@ class Spider():
         size = len(board)
         self.link = [Node([0, 0], None)]
         self.spider = self.link[0]
-        targetBoard = [[0 for x in range(size)] for y in range(size)]
+        # targetBoard = [[0 for x in range(size)] for y in range(size)]
+        targetBoard = np.zeros(shape=(size, size), dtype=np.int)
         self.clean()
         next = self.spider.next(board, self.link)
         # 只要不是spider在原点且检查完了所有方向(这意味着整个棋盘已经检查完毕),就继续检查
@@ -93,7 +94,7 @@ class Spider():
             next = self.spider.next(board, self.link)
         # 最后,将每一个节点所对应的(x,y坐标设为target point)
         for n in self.link:
-            targetBoard[n.x][n.y] = 1
+            targetBoard[n.x, n.y] = 1
         return targetBoard
 
 class Game():
@@ -105,7 +106,8 @@ class Game():
         if point_num % 6 != 0:
             raise("size * size can not devide 6!")
 
-        self.mainBorad = [[0 for x in range(size)] for y in range(size)]
+        # self.mainBorad = [[0 for x in range(size)] for y in range(size)]
+        self.mainBorad = np.zeros(shape=(size, size), dtype=np.int)
         posList = []
         for x in range(size):
             for y in range(size):
@@ -121,13 +123,13 @@ class Game():
                 left = left - 1
             color = color + 1
         # print(self)
-        self.mainBorad = np.array(self.mainBorad)
+        # self.mainBorad = np.array(self.mainBorad)
 
         # init start
         self.start = ''
         for x in range(size):
             for y in range(size):
-                self.start += str(self.mainBorad[x][y])
+                self.start += str(self.mainBorad[x, y])
 
         # init all step
         self.allStep = ''
@@ -142,19 +144,19 @@ class Game():
         self.step = 0
 
         # init baseCorlor
-        self.baseColor = self.mainBorad[0][0]
+        self.baseColor = self.mainBorad[0, 0]
 
         # calculate f value
         self.need_cal_f = need_cal_f
         self.cal_f()
 
     def targetArea(self):
-        area = 0
-        for x in range(self.size):
-            for y in range(self.size):
-                if(self.targetBoard[x][y]):
-                    area = area + 1
-        return area
+        # area = 0
+        # for x in range(self.size):
+        #     for y in range(self.size):
+        #         if(self.targetBoard[x][y]):
+        #             area = area + 1
+        return len(np.nonzero(self.targetBoard)[0])
 
     def cal_f(self):
         if not self.need_cal_f:
@@ -169,7 +171,7 @@ class Game():
         smallest_manhattan_distance = self.size * 2
         for x in range(self.size):
             for y in range(self.size):
-                if(self.targetBoard[x][y] == 1):
+                if(self.targetBoard[x, y] == 1):
                     manhattan_distance = self.size - 1 - x + self.size - 1 - y
                     if manhattan_distance < smallest_manhattan_distance:
                         smallest_manhattan_distance = manhattan_distance
@@ -184,8 +186,8 @@ class Game():
         self.step = self.step + 1
         for x in range(self.size):
             for y in range(self.size):
-                if(self.targetBoard[x][y] == 1):
-                    self.mainBorad[x][y] = color
+                if(self.targetBoard[x, y] == 1):
+                    self.mainBorad[x, y] = color
         if visual:
             print(self)
         self.allStep += str(color)
@@ -204,9 +206,9 @@ class Game():
         for x in range(self.size):
             for y in range(self.size):
                 if (y != self.size - 1):
-                    output += str(self.mainBorad[x][y]) + "  "
+                    output += str(self.mainBorad[x, y]) + "  "
                 else:
-                    output += str(self.mainBorad[x][y])
+                    output += str(self.mainBorad[x, y])
             output += "\n"
         return output
 
@@ -214,7 +216,7 @@ class Game():
         output = ''
         for x in range(self.size):
             for y in range(self.size):
-                output += str(self.mainBorad[x][y])
+                output += str(self.mainBorad[x, y])
         return output
 
 if __name__ == "__main__":
