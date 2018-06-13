@@ -18,7 +18,9 @@ def validate(model, vdataloader, tbatch_num, criterion):
         outputs = model(inputs)
         loss = criterion(outputs, targets)
         train_loss += loss.item()
-    print(train_loss / tdata_size)
+    print("validate loss:", train_loss / tdata_size)
+    print("sample result:")
+    print(outputs[0], targets[0])
     model.train()
 
 def test(model):
@@ -72,11 +74,11 @@ if __name__ == "__main__":
     # model = torch.load("pre_cnn.pkl").cuda()
     model.train()
 
-    # validate(model)
-
     criterion = MyLoss()
     optimizer = optim.SGD(model.parameters(), lr=1e-3,
                         momentum=0.9, weight_decay=5e-4)
+
+    validate(model, vdataloader, len(vxs) // batch_size, criterion)
 
     for epoch in range(100):
         train_loss = 0
@@ -92,8 +94,7 @@ if __name__ == "__main__":
 
             train_loss += loss.item()
         
-        print(train_loss / tdata_size)
+        print("train loss:", train_loss)
 
-        if epoch % 3 == 2:
-            validate(model, vdataloader, len(vxs) // batch_size, criterion)
-            torch.save(model, "pre_cnn.pkl")
+        torch.save(model, "pre_cnn.pkl")
+        validate(model, vdataloader, len(vxs) // batch_size, criterion)
