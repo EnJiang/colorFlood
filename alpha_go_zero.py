@@ -8,17 +8,17 @@ from env import Env
 from torch.utils.data import DataLoader
 
 
-def validate(model, vdataloader, tbatch_num, criterion):
+def validate(model, vdataloader, vbatch_num, criterion):
     model.eval()
-    train_loss = 0
-    for batch_idx, sample in tqdm(enumerate(vdataloader), total=tbatch_num):
+    loss = 0
+    for batch_idx, sample in tqdm(enumerate(vdataloader), total=vbatch_num):
         # print(type(sample))
         inputs, targets = sample[0], sample[1]
         inputs, targets = inputs.cuda(), targets.cuda()
         outputs = model(inputs)
-        loss = criterion(outputs, targets)
-        train_loss += loss.item()
-    print("validate loss:", train_loss / tdata_size)
+        loss_batch = criterion(outputs, targets)
+        loss += loss_batch.item()
+    print("validate loss:", loss / vbatch_num)
     print("sample result:")
     print(outputs[0], targets[0])
     model.train()
@@ -94,7 +94,7 @@ if __name__ == "__main__":
 
             train_loss += loss.item()
         
-        print("train loss:", train_loss)
+        print("train loss:", train_loss / tbatch_num)
 
         torch.save(model, "pre_cnn.pkl")
         validate(model, vdataloader, len(vxs) // batch_size, criterion)
