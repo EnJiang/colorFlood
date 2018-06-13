@@ -95,5 +95,5 @@ if __name__ == "__main__":
         print(train_loss / tdata_size)
 
         if epoch % 3 == 2:
-            validate(model, vdataloader, tbatch_num, criterion)
+            validate(model, vdataloader, len(vxs) // batch_size, criterion)
             torch.save(model, "pre_cnn.pkl")
