@@ -20,7 +20,8 @@ def validate(model, vdataloader, vbatch_num, criterion):
         loss += loss_batch.item()
     print("validate loss:", loss / vbatch_num)
     print("sample result:")
-    print(outputs[0], targets[0])
+    print(outputs[0])
+    print(targets[0])
     model.train()
 
 def test(model):
