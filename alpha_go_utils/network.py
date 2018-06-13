@@ -56,8 +56,10 @@ class MyLoss(nn.Module):
         self.loss_func_2 = nn.BCELoss()
 
     def forward(self, predict, real):
-        loss_1 = self.loss_func_1(predict[:, : -1], real[:, : -1])
-        loss_2 = self.loss_func_2(predict[:, -1: ], real[:, -1: ])
+        target_1 = torch.LongTensor(real[:, : -1])
+        target_2 = torch.LongTensor(real[:, -1:])
+        loss_1 = self.loss_func_1(predict[:, : -1], target_1)
+        loss_2 = self.loss_func_2(predict[:, -1: ], target_2)
 
         return loss_1 + loss_2
 
