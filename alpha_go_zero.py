@@ -51,7 +51,7 @@ def test(model):
 
 
 if __name__ == "__main__":
-    batch_size = 256
+    batch_size = 512
 
     # filename = generate_greedy(data_num=100000)
     # tdata = np.load("./1528760107.npz")

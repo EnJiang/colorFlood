@@ -15,7 +15,7 @@ class ConvNet(nn.Module):
             nn.Conv2d(512, 512, kernel_size=3, padding=1),
             nn.BatchNorm2d(512),
             nn.ReLU(),
-            )
+        )
         self.layer2 = nn.Sequential(
             nn.Conv2d(512, 512, kernel_size=3, padding=1),
             nn.BatchNorm2d(512),
@@ -25,8 +25,9 @@ class ConvNet(nn.Module):
             nn.ReLU(),
             nn.Conv2d(512, 256, kernel_size=3),
             nn.ReLU(),
-            nn.MaxPool2d(kernel_size=2))
-        self.fc1 = nn.Linear(2048, 2048)
+            nn.MaxPool2d(kernel_size=2)
+        )
+        self.fc1 = nn.Linear(1024, 2048)
         self.fc2 = nn.Linear(2048, 2048)
         self.fc3 = nn.Linear(2048, output_shape)
         self.relu1 = nn.ReLU()
@@ -38,8 +39,8 @@ class ConvNet(nn.Module):
         out = self.layer1(x)
         out = self.layer2(out)
         out = out.reshape(out.size(0), -1)
-        print(out.size())
-        exit()
+        # print(out.size())
+        # exit()
         out = self.fc1(out)
         out = self.relu1(out)
         out = self.fc2(out)
