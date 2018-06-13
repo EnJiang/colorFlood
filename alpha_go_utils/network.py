@@ -51,7 +51,7 @@ class ConvNet(nn.Module):
 
 class MyLoss(nn.Module):
     def __init__(self):
-        super.__init__()
+        super().__init__()
         self.loss_func_1 = nn.CrossEntropyLoss()
         self.loss_func_2 = nn.BCELoss()
 
