@@ -8,6 +8,7 @@ class Env(gym.Env):
     def __init__(self, size=12):
         self.size = size
         self.game = Game(size=size)
+        self._last_obs = None
 
     @property
     def action_space(self):
@@ -16,6 +17,10 @@ class Env(gym.Env):
     @property
     def observation_space(self):
         return self.obs(self.game.baseColor)
+
+    @property
+    def last_obs(self):
+        return self._last_obs
 
     def obs(self, color):
         size = self.size
@@ -57,6 +62,7 @@ class Env(gym.Env):
             reward = 0
 
         ob = self.obs(action)
+        self._last_obs = ob
 
         return ob, reward, done, info
 

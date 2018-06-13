@@ -5,8 +5,8 @@ import torch
 from functools import lru_cache
 
 class Node(object):
-    def __init__(self, game, policy, c=1):
-        self.game = game
+    def __init__(self, env, policy, c=1):
+        self.env = env
         self.N = 0
         self.N_a_list = [0 for _ in range(6)]
         self.q_a_list = [0 for _ in range(6)]
@@ -21,9 +21,9 @@ class Node(object):
         hash_list = dict()
         actions = [i + 1 for i in range(6)]
         for a in actions:
-            tmp_game = deepcopy(self.game)
-            tmp_game.change(a)
-            hash_list[a] = tmp_game.hash_string()
+            tmp_env = deepcopy(self.env)
+            tmp_env.step(a)
+            hash_list[a] = tmp_env.game.hash_string()
 
     def ucb_list(self):
         return self._ucb_list(self.N)
@@ -57,7 +57,7 @@ class Node(object):
         return q_a + self.c * p_a * sqrt(self.N) / (1 + N_a)
 
     def __repr__(self):
-        return self.game.hash_string()
+        return self.env.game.hash_string()
 
     def __hash__(self):
         return self.__repr__()
@@ -72,11 +72,9 @@ class MCTS(object):
         self.root_node = root_node
         self.size = size
 
-    def run(self, root):
-        if self.all_children_in_tree(root):
-            self.search_down(root)
-        else:
-            self.select_and_create_nonexist_child(root)
+    def run(self, time=1):
+        for _ in range(time):
+            self.search_down(self.root_node)
 
     def search_down(self, root):
         chian = []
@@ -92,7 +90,7 @@ class MCTS(object):
         # let's select a unseen child
         child, action_index = self.select_and_create_nonexist_child(root)
         chian.append((hash(root), action_index))
-        v = self.predict_value(child.game)
+        v = self.predict_value(child.env)
 
         self.back_prop(chian, v)
 
@@ -111,11 +109,11 @@ class MCTS(object):
         for i in range(self.size):
             if root.children_hash_list[i] not in self.tree.keys():
                 action = i + 1
-                tmp_game = deepcopy(root.game)
-                tmp_game.change(action)
-                child = Node(tmp_game, self.predict_policy(tmp_game))
+                tmp_env = deepcopy(root.env)
+                tmp_env.step(action)
+                child = Node(tmp_env, self.predict_policy(tmp_env))
                 self.tree[hash(child)] = child
-                break # explore select only one child
+                break # explore only one child
         return child, action - 1
 
     def next_search_down_node(self, root):
@@ -124,27 +122,26 @@ class MCTS(object):
         child_hash = root.children_hash_list[child_index]
         return self.tree[child_hash], child_index
 
-    def network_forward(self, game):
-        obs = game.obs
+    def network_forward(self, env):
+        obs = env.last_obs
         obs = np.reshape(obs, (1, ) + obs.shape)
         obs = torch.FloatTensor(obs).cuda()
         output = self.net(obs)
         output = output.cpu().data.numpy()[0]
         return output
 
-    def predict_value(self, game):
+    def predict_value(self, env):
         if self.use_nn:
-            output = self.network_forward(game)
+            output = self.network_forward(env)
             return output[: self.size]
         else:
             return [0 for _ in range(self.size)]
 
-
-    def predict_policy(self, game):
+    def predict_policy(self, env):
         if self.use_nn:
-            output = self.network_forward(game)
+            output = self.network_forward(env)
             return output[-1]
-        return game.targetArea() // (self.size ** 2)
+        return env.targetArea() // (self.size ** 2)
 
     def back_prop(self, chain, v):
         for node, action_index in chain:
@@ -152,13 +149,7 @@ class MCTS(object):
 
     @property
     def pi(self):
-        obs = self.root_node.game.obs
-        obs = np.reshape(obs, (1, ) + obs.shape)
-        obs = torch.FloatTensor(obs).cuda()
-        output = self.net(obs)
-        output = output.cpu().data.numpy()[0]
-        pi = output[: 6]
-        return pi
+        return self.root_node.ucb_list()
 
 
 if __name__ == "__main__":
