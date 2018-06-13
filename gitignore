@@ -105,3 +105,6 @@ venv.bak/
 
 # traning data
 ./data/*
+
+# model
+.pkl
