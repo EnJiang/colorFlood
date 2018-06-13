@@ -60,8 +60,8 @@ if __name__ == "__main__":
     vxs = tdata["xs"]
     vys = tdata["ys"]
 
-    tdata_size = len(tdata)
-    tbatch_num = len(tdata) // batch_size
+    tdata_size = len(txs)
+    tbatch_num = len(txs) // batch_size
 
     tset = MyDataset(txs, tys)
     vset = MyDataset(vxs, vys)
