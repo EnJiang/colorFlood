@@ -49,6 +49,18 @@ class ConvNet(nn.Module):
 
         return out
 
+class MyLoss(nn.Module):
+    def __init__(self):
+        super.__init__()
+        self.loss_func_1 = nn.CrossEntropyLoss()
+        self.loss_func_2 = nn.BCELoss()
+
+    def forward(self, predict, real):
+        loss_1 = self.loss_func_1(predict[:, : -1], real[:, : -1])
+        loss_2 = self.loss_func_2(predict[:, -1: ], real[:, -1: ])
+
+        return loss_1 + loss_2
+
 if __name__ == "__main__":
     model = ConvNet()
     data = np.random.rand(1, 4, 11, 11)

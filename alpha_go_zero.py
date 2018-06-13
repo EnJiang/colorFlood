@@ -1,5 +1,5 @@
 from alpha_go_utils.data import *
-from alpha_go_utils.network import ConvNet
+from alpha_go_utils.network import ConvNet, MyLoss
 import numpy as np
 import torch.optim as optim
 import torch.nn as nn
@@ -7,7 +7,21 @@ from tqdm import tqdm
 from env import Env
 from torch.utils.data import DataLoader
 
-def validate(model):
+
+def validate(model, vdataloader, tbatch_num, criterion):
+    model.eval()
+    train_loss = 0
+    for batch_idx, sample in tqdm(enumerate(vdataloader), total=tbatch_num):
+        # print(type(sample))
+        inputs, targets = sample[0], sample[1]
+        inputs, targets = inputs.cuda(), targets.cuda()
+        outputs = model(inputs)
+        loss = criterion(outputs, targets)
+        train_loss += loss.item()
+    print(train_loss / tdata_size)
+    model.train()
+
+def test(model):
     print("\n\n\n\n\n\n")
     print("--------validating--------")
     e = Env(size=6)
@@ -35,13 +49,24 @@ def validate(model):
 
 
 if __name__ == "__main__":
-    # filename = generate_greedy(data_num=100000)
-    tdata = np.load("./1528531033.npz")
-    xs = tdata["xs"]
-    ys = tdata["ys"]
+    batch_size = 256
 
-    data_set = MyDataset(xs, ys)
-    dataloader = DataLoader(data_set, batch_size=32, shuffle=True)
+    # filename = generate_greedy(data_num=100000)
+    tdata = np.load("./1528760107.npz")
+    txs = tdata["xs"]
+    tys = tdata["ys"]
+
+    vdata = np.load("./1528531033.npz")
+    vxs = tdata["xs"]
+    vys = tdata["ys"]
+
+    tdata_size = len(tdata)
+    tbatch_num = len(tdata) // batch_size
+
+    tset = MyDataset(txs, tys)
+    vset = MyDataset(vxs, vys)
+    tdataloader = DataLoader(tset, batch_size=batch_size, shuffle=True)
+    vdataloader = DataLoader(vset, batch_size=batch_size, shuffle=False)
 
     model = ConvNet().cuda()
     # model = torch.load("pre_cnn.pkl").cuda()
@@ -49,15 +74,13 @@ if __name__ == "__main__":
 
     # validate(model)
 
-    criterion = nn.MSELoss()
+    criterion = nn.MyLoss()
     optimizer = optim.SGD(model.parameters(), lr=1e-3,
                         momentum=0.9, weight_decay=5e-4)
 
     for epoch in range(100):
         train_loss = 0
-        correct = 0
-        total = 0
-        for batch_idx, sample in tqdm(enumerate(dataloader), total=len(data_set) // 32):
+        for batch_idx, sample in tqdm(enumerate(tdataloader), total=tbatch_num):
             # print(type(sample))
             inputs, targets = sample[0], sample[1]
             inputs, targets = inputs.cuda(), targets.cuda()
@@ -69,8 +92,8 @@ if __name__ == "__main__":
 
             train_loss += loss.item()
         
-        print(train_loss / 5095)
-        torch.save(model, "pre_cnn.pkl")
+        print(train_loss / tdata_size)
 
         if epoch % 3 == 2:
-            validate(model)
+            validate(model, vdataloader, tbatch_num, criterion)
+            torch.save(model, "pre_cnn.pkl")
