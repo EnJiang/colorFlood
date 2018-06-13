@@ -17,10 +17,10 @@ class ConvNet(nn.Module):
             nn.ReLU(),
             )
         self.layer2 = nn.Sequential(
-            nn.Conv2d(512, 512, kernel_size=3),
+            nn.Conv2d(512, 512, kernel_size=3, padding=1),
             nn.BatchNorm2d(512),
             nn.ReLU(),
-            nn.Conv2d(512, 512, kernel_size=3),
+            nn.Conv2d(512, 512, kernel_size=3, padding=1),
             nn.BatchNorm2d(512),
             nn.ReLU(),
             nn.Conv2d(512, 512, kernel_size=3),
