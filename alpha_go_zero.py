@@ -52,13 +52,13 @@ if __name__ == "__main__":
     batch_size = 256
 
     # filename = generate_greedy(data_num=100000)
-    tdata = np.load("./1528760107.npz")
-    txs = tdata["xs"]
-    tys = tdata["ys"]
+    # tdata = np.load("./1528760107.npz")
+    txs = np.load(open("txs.npy", "rb"))
+    tys = np.load(open("tys.npy", "rb"))
 
-    vdata = np.load("./1528531033.npz")
-    vxs = tdata["xs"]
-    vys = tdata["ys"]
+    # vdata = np.load("./1528531033.npz")
+    vxs = np.load(open("vxs.npy", "rb"))
+    vys = np.load(open("vxs.npy", "rb"))
 
     tdata_size = len(txs)
     tbatch_num = len(txs) // batch_size
@@ -74,7 +74,7 @@ if __name__ == "__main__":
 
     # validate(model)
 
-    criterion = nn.MyLoss()
+    criterion = MyLoss()
     optimizer = optim.SGD(model.parameters(), lr=1e-3,
                         momentum=0.9, weight_decay=5e-4)
 
