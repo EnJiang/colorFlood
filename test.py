@@ -17,15 +17,14 @@ if __name__ == "__main__":
     vdataloader = DataLoader(vset, batch_size=8, shuffle=False)
 
     model.eval()
-    loss = 0
-    for batch_idx, sample in enumerate(vdataloader):
-        # print(type(sample))
-        inputs, targets = sample[0], sample[1]
-        inputs, targets = inputs.cuda(), targets.cuda()
-        outputs = model(inputs)
-        print(outputs)
-        print(targets)
-
+    # loss = 0
+    # for batch_idx, sample in enumerate(vdataloader):
+    #     # print(type(sample))
+    #     inputs, targets = sample[0], sample[1]
+    #     inputs, targets = inputs.cuda(), targets.cuda()
+    #     outputs = model(inputs)
+    #     print(outputs)
+    #     print(targets)
 
 
     e = Env(size=6)
@@ -44,6 +43,7 @@ if __name__ == "__main__":
 
         print(e.game)
         print(action_greedy, action_pi, a)
+        print(pi)
 
         next_obs, reward, done, _ = e.step(action_greedy)
         obs = next_obs
