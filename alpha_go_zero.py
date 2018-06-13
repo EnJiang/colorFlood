@@ -58,7 +58,7 @@ if __name__ == "__main__":
 
     # vdata = np.load("./1528531033.npz")
     vxs = np.load(open("vxs.npy", "rb"))
-    vys = np.load(open("vxs.npy", "rb"))
+    vys = np.load(open("vys.npy", "rb"))
 
     tdata_size = len(txs)
     tbatch_num = len(txs) // batch_size
