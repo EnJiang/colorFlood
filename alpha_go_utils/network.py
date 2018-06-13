@@ -6,30 +6,30 @@ class ConvNet(nn.Module):
     def __init__(self, output_shape=7):
         super(ConvNet, self).__init__()
         self.layer1 = nn.Sequential(
-            nn.Conv2d(4, 512, kernel_size=3, padding=1),
-            nn.BatchNorm2d(512),
+            nn.Conv2d(4, 128, kernel_size=3, padding=1),
+            nn.BatchNorm2d(128),
             nn.ReLU(),
-            nn.Conv2d(512, 512, kernel_size=3, padding=1),
-            nn.BatchNorm2d(512),
+            nn.Conv2d(128, 128, kernel_size=3, padding=1),
+            nn.BatchNorm2d(128),
             nn.ReLU(),
-            nn.Conv2d(512, 512, kernel_size=3, padding=1),
-            nn.BatchNorm2d(512),
+            nn.Conv2d(128, 128, kernel_size=3, padding=1),
+            nn.BatchNorm2d(128),
             nn.ReLU(),
         )
         self.layer2 = nn.Sequential(
-            nn.Conv2d(512, 512, kernel_size=3, padding=1),
-            nn.BatchNorm2d(512),
+            nn.Conv2d(128, 128, kernel_size=3, padding=1),
+            nn.BatchNorm2d(128),
             nn.ReLU(),
-            nn.Conv2d(512, 512, kernel_size=3, padding=1),
-            nn.BatchNorm2d(512),
+            nn.Conv2d(128, 128, kernel_size=3, padding=1),
+            nn.BatchNorm2d(128),
             nn.ReLU(),
-            nn.Conv2d(512, 256, kernel_size=3),
+            nn.Conv2d(128, 128, kernel_size=3),
             nn.ReLU(),
             nn.MaxPool2d(kernel_size=2)
         )
-        self.fc1 = nn.Linear(1024, 2048)
-        self.fc2 = nn.Linear(2048, 2048)
-        self.fc3 = nn.Linear(2048, output_shape)
+        self.fc1 = nn.Linear(512, 1024)
+        self.fc2 = nn.Linear(1024, 1024)
+        self.fc3 = nn.Linear(1024, output_shape)
         self.relu1 = nn.ReLU()
         self.relu2 = nn.ReLU()
         self.relu3 = nn.ReLU()
