@@ -78,7 +78,7 @@ if __name__ == "__main__":
     optimizer = optim.SGD(model.parameters(), lr=1e-3,
                         momentum=0.9, weight_decay=5e-4)
 
-    validate(model, vdataloader, len(vxs) // batch_size, criterion)
+    # validate(model, vdataloader, len(vxs) // batch_size, criterion)
 
     for epoch in range(100):
         train_loss = 0
