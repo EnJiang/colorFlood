@@ -6,7 +6,7 @@ import torch.nn as nn
 from tqdm import tqdm
 from env import Env
 from torch.utils.data import DataLoader
-
+from greedy import greedy
 
 def validate(model, vdataloader, vbatch_num, criterion):
     model.eval()
