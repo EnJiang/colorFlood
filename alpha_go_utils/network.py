@@ -56,8 +56,8 @@ class MyLoss(nn.Module):
         self.loss_func_2 = nn.MSELoss()
 
     def forward(self, predict, real):
-        target_1 = torch.max(real[:, : -1], 1)
-        print(target_1)
+        target_1 = torch.max(real[:, : -1], 1)[1]
+        # print(target_1)
         target_2 = real[:, -1:]
         loss_1 = self.loss_func_1(predict[:, : -1], target_1)
         loss_2 = self.loss_func_2(predict[:, -1: ], target_2)
