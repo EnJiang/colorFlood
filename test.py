@@ -11,10 +11,10 @@ from alpha_go_utils.data import MyDataset
 
 if __name__ == "__main__":
     model = torch.load("pre_cnn.pkl").cuda()
-    vxs = np.load(open("vxs.npy", "rb"))
-    vys = np.load(open("vys.npy", "rb"))
-    vset = MyDataset(vxs, vys)
-    vdataloader = DataLoader(vset, batch_size=8, shuffle=False)
+    # vxs = np.load(open("vxs.npy", "rb"))
+    # vys = np.load(open("vys.npy", "rb"))
+    # vset = MyDataset(vxs, vys)
+    # vdataloader = DataLoader(vset, batch_size=8, shuffle=False)
 
     model.eval()
     # loss = 0
@@ -40,7 +40,7 @@ if __name__ == "__main__":
             pi = output[: 6]
             a = output[-1]
 
-            action_greedy = greedy(e.game, 1)[0] - 1
+            # action_greedy = greedy(e.game, 1)[0] - 1
             action_pi = np.argmax(pi)
 
             # print(e.game)
@@ -53,4 +53,3 @@ if __name__ == "__main__":
             obs = torch.FloatTensor(obs).cuda()
 
         print(e.game.step)
-        print("\n\n\n\n\n\n")
