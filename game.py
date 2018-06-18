@@ -196,7 +196,7 @@ class Game():
         self.cal_f()
 
     def isOver(self):
-        if self.targetArea() == self.point_num or self.step > self.size * 10:
+        if self.targetArea() == self.point_num:
             return True
         else:
             return False

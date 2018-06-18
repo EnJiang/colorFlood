@@ -22,6 +22,10 @@ class Env(gym.Env):
     def last_obs(self):
         return self._last_obs
 
+    @property
+    def last_action_index(self):
+        return self.game.baseColor - 1
+
     def obs(self, color):
         size = self.size
 
