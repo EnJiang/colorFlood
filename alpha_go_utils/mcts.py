@@ -6,7 +6,7 @@ from tqdm import tqdm
 import random
 
 class Node(object):
-    def __init__(self, env, policy, c=15):
+    def __init__(self, env, policy, c=6):
         self.env = env
         self.N = 0
         self.N_a_list = [0 for _ in range(6)]
