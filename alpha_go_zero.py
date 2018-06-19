@@ -11,7 +11,7 @@ from collections import namedtuple
 
 Report = namedtuple("Report", "step path greedy_step")
 
-SEARCH_TIME = 3000
+SEARCH_TIME = 1600
 
 def greedy_evluate(env):
     g_e = deepcopy(env)
