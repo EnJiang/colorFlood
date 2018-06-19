@@ -17,7 +17,7 @@ if __name__ == "__main__":
     e.reset()
     for _ in range(100):
         done = False
-        
+
         obs = e.reset()
         g_e = deepcopy(e)
 
@@ -30,7 +30,7 @@ if __name__ == "__main__":
         while not done:
             root_node = init_node(e, use_nn=True, model=model)
             t = MCTS(root_node, use_nn=True, net=model)
-            t.run(time=500)
+            t.run(time=3000)
 
             epoch_pi.append(t.pi)
             epoch_a.append(a)
@@ -38,7 +38,7 @@ if __name__ == "__main__":
             
             action_index = np.argmax(t.pi)
 
-            # print(t.pi)
+            print(t.pi)
             print(e.game)
             # print(action_index)
             # print()
@@ -52,8 +52,8 @@ if __name__ == "__main__":
         epoch_a.reverse()
 
         print(epoch_a)
-        print(e.game.step)
-        exit()
+        print(e.game.step, len(epoch_pi), len(eopch_obs), len(epoch_a))
+        # exit()
 
         done = False
         while not done:
