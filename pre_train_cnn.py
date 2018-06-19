@@ -76,7 +76,7 @@ if __name__ == "__main__":
     model.train()
 
     criterion = MyLoss()
-    optimizer = optim.SGD(model.parameters(), lr=1e-4,
+    optimizer = optim.SGD(model.parameters(), lr=1e-3,
                           momentum=0.9, weight_decay=5e-4)
 
     # validate(model, vdataloader, len(vxs) // batch_size, criterion)
