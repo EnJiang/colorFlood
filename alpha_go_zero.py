@@ -70,25 +70,27 @@ def generate_epoch_training_data(model):
 if __name__ == "__main__":
     model = torch.load("pre_cnn.pkl").cuda()
     # model = ConvNet().cuda()
+    for _ in range(10):
+        e = Env(size=6)
+        e.reset()
 
-    e = Env(size=6)
-    e.reset()
-
-    done = False
-    while not done:
-        step_used = e.game.step
         greedy_step = greedy_evluate(e)
-        baseline = greedy_step - step_used
 
-        root_node = init_node(e, use_nn=True, model=model)
-        t = MCTS(root_node, use_nn=False, net=model)
-        t.run(baseline, time=SEARCH_TIME)
+        done = False
+        while not done:
+            step_used = e.game.step
+            greedy_step = greedy_evluate(e)
+            baseline = greedy_step - step_used
 
-        print()
-        print(e.game)
-        print(t.pi)
-        
-        action_index = np.argmax(t.pi)
-        _, _, done, _ = e.step(action_index)
+            root_node = init_node(e, use_nn=True, model=model)
+            t = MCTS(root_node, use_nn=False, net=model)
+            t.run(baseline, time=SEARCH_TIME)
 
-    print(e.game.step)
+            print()
+            print(e.game)
+            print(t.pi)
+            
+            action_index = np.argmax(t.pi)
+            _, _, done, _ = e.step(action_index)
+
+        print(e.game.step, greedy_step)
