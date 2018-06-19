@@ -1,4 +1,4 @@
-# import torch
+import torch
 from alpha_go_utils.mcts import *
 from alpha_go_utils.network import *
 from env import Env
@@ -68,7 +68,7 @@ def generate_epoch_training_data(model):
     return eopch_obs, epoch_output, report
 
 if __name__ == "__main__":
-    model = ConvNet()
+    model = ConvNet().cuda()
 
     e = Env(size=6)
     e.reset()
