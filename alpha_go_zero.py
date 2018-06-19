@@ -6,8 +6,8 @@ from copy import deepcopy
 from greedy import greedy
 
 if __name__ == "__main__":
-    model = torch.load("pre_cnn.pkl").cuda()
-    model.train()
+    model = torch.load("light_trained_pre_cnn.pkl").cuda()
+    model.eval()
 
     obs_memory = []
     act_memory = []
