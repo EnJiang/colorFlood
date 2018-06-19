@@ -17,6 +17,7 @@ if __name__ == "__main__":
     e.reset()
     for _ in range(100):
         done = False
+        
         obs = e.reset()
         g_e = deepcopy(e)
 

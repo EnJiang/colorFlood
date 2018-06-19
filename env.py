@@ -45,6 +45,9 @@ class Env(gym.Env):
         features.append(target_board)
 
         ob = np.concatenate(features, axis=0)
+
+        # book keeping
+        self._last_obs = ob
         return ob
 
     def step(self, action):
@@ -66,7 +69,6 @@ class Env(gym.Env):
             reward = 0
 
         ob = self.obs(action)
-        self._last_obs = ob
 
         return ob, reward, done, info
 
