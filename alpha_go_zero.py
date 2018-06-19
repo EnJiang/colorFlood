@@ -7,6 +7,10 @@ from greedy import greedy
 
 import concurrent.futures
 
+from collections import namedtuple
+
+Report = namedtuple("Report", "step path greedy_step")
+
 SEARCH_TIME = 2000
 
 def greedy_evluate(env):
@@ -38,6 +42,7 @@ def generate_epoch_training_data(model):
         t = MCTS(root_node, use_nn=True, net=model)
         t.run(time=SEARCH_TIME)
 
+        print(t.pi)
         epoch_pi.append(t.pi)
         epoch_a.append(a)
         a *= 0.8
@@ -59,11 +64,7 @@ def generate_epoch_training_data(model):
             pi + [a]
         )
 
-    report = {
-        "step": e.game.step,
-        "path": e.game.allStep,
-        "greedy_step": greedy_step
-    }
+    report = Report(e.game.step, e.game.allStep, greedy_step)
 
     return eopch_obs, epoch_output, report
 
@@ -119,14 +120,20 @@ if __name__ == "__main__":
     model.eval()
     model.share_memory()
 
-    # _, _, report = generate_epoch_training_data(model)
-    with concurrent.futures.ProcessPoolExecutor(max_workers=8) as executor:
-        futures = [executor.submit(generate_epoch_training_data, model)
-                   for _ in range(8)]
-        for future in concurrent.futures.as_completed(futures):
-            try:
-                data = future.result()
-                print(data[2])
-            except Exception as exc:
-                print(exc)
+    mcts_step = 0
+    greedy_step = 0
+
+    for i in range(100):
+        _, _, report = generate_epoch_training_data(model)
+
+        mcts_step += report.step
+        greedy += report.greedy_step
+
+        print('''
+        mcts   :  %.4f
+        greedy :  %.4f
+        ''' % (
+            mcts_step / (i + 1), greedy_step / (i + 1)
+            )
+        )
             
