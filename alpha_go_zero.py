@@ -7,6 +7,12 @@ from greedy import greedy
 
 import concurrent.futures
 
+from multiprocessing import set_start_method
+try:
+    set_start_method('spawn')
+except RuntimeError:
+    pass
+
 SEARCH_TIME = 2000
 
 def greedy_evluate(env):
