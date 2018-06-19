@@ -118,6 +118,7 @@ def old_main():
 if __name__ == "__main__":
     model = torch.load("light_trained_pre_cnn.pkl").cuda()
     model.eval()
+    model.share_memory()
 
     # _, _, report = generate_epoch_training_data(model)
     with concurrent.futures.ProcessPoolExecutor(max_workers=8) as executor:
@@ -126,6 +127,7 @@ if __name__ == "__main__":
         for future in concurrent.futures.as_completed(futures):
             try:
                 data = future.result()
+                print(data[2])
             except Exception as exc:
                 print(exc)
             
