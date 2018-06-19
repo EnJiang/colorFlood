@@ -69,7 +69,7 @@ def generate_epoch_training_data(model):
 
 if __name__ == "__main__":
     model = torch.load("pre_cnn.pkl").cuda()
-    model = ConvNet().cuda()
+    # model = ConvNet().cuda()
 
     e = Env(size=6)
     e.reset()
