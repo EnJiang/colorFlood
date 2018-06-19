@@ -69,7 +69,7 @@ class MyLoss(nn.Module):
 
         return loss_1 + loss_2
 
-def MaskPiLoss(MyLoss):
+class MaskPiLoss(MyLoss):
     def forward(self, predict, real):
         target_2 = real[:, -1:]
         loss_2 = self.loss_func_2(predict[:, -1:], target_2)
