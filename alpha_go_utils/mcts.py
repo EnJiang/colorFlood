@@ -186,8 +186,8 @@ class MCTS(object):
         last_action_index = self.root_node.env.last_action_index
         q_a_list = self.root_node.q_a_list
         N_a_list = self.root_node.N_a_list
-        # result = [q / N for q, N in zip(q_a_list, N_a_list)]
-        result = N_a_list
+        result = [q / N for q, N in zip(q_a_list, N_a_list)]
+        # result = N_a_list
         result[last_action_index] = 0
         return result
 
