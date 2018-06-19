@@ -117,24 +117,11 @@ def old_main():
         epoch_a.reverse()
 
 if __name__ == "__main__":
-    model = torch.load("light_trained_pre_cnn.pkl").cuda()
-    model.eval()
-    model.share_memory()
-
-    mcts_step = 0
-    greedy_step = 0
-
-    for i in range(100):
-        _, _, report = generate_epoch_training_data(model)
-
-        mcts_step += report.step
-        greedy_step += report.greedy_step
-
-        print('''
-        mcts   :  %.4f
-        greedy :  %.4f
-        ''' % (
-            mcts_step / (i + 1), greedy_step / (i + 1)
-            )
-        )
+    e = Env(size=6)
+    s = 0
+    for i in range(1, 10000):
+        e.reset()
+        greedy_step = greedy_evluate(e)
+        s += greedy_evluate
+        print(s / i, i)
             
