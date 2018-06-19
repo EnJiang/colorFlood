@@ -103,6 +103,10 @@ venv.bak/
 # mypy
 .mypy_cache/
 
+# pycache
+__pycache__
+.pyc
+
 # traning data
 ./data/*
 
