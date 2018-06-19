@@ -71,8 +71,8 @@ if __name__ == "__main__":
     tdataloader = DataLoader(tset, batch_size=batch_size, shuffle=True)
     vdataloader = DataLoader(vset, batch_size=batch_size, shuffle=False)
 
-    model = ConvNet().cuda()
-    # model = torch.load("pre_cnn.pkl").cuda()
+    # model = ConvNet().cuda()
+    model = torch.load("light_trained_pre_cnn.pkl").cuda()
     model.train()
 
     criterion = MyLoss()
