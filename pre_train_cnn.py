@@ -71,12 +71,12 @@ if __name__ == "__main__":
     tdataloader = DataLoader(tset, batch_size=batch_size, shuffle=True)
     vdataloader = DataLoader(vset, batch_size=batch_size, shuffle=False)
 
-    # model = ConvNet().cuda()
-    model = torch.load("light_trained_pre_cnn.pkl").cuda()
+    model = ConvNet().cuda()
+    # model = torch.load("light_trained_pre_cnn.pkl").cuda()
     model.train()
 
     criterion = MyLoss()
-    optimizer = optim.SGD(model.parameters(), lr=1e-3,
+    optimizer = optim.SGD(model.parameters(), lr=3*1e-4,
                           momentum=0.9, weight_decay=5e-4)
 
     # validate(model, vdataloader, len(vxs) // batch_size, criterion)
