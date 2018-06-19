@@ -11,7 +11,7 @@ from collections import namedtuple
 
 Report = namedtuple("Report", "step path greedy_step")
 
-SEARCH_TIME = 2000
+SEARCH_TIME = 3000
 
 def greedy_evluate(env):
     g_e = deepcopy(env)
@@ -42,6 +42,7 @@ def generate_epoch_training_data(model):
         t = MCTS(root_node, use_nn=True, net=model)
         t.run(time=SEARCH_TIME)
 
+        print(e.game)
         print(t.pi)
         epoch_pi.append(t.pi)
         epoch_a.append(a)
