@@ -2,6 +2,7 @@ import torch
 from torch.utils.data import DataLoader
 
 import numpy as np
+from copy import deepcopy
 
 from env import Env
 from greedy import greedy
@@ -26,12 +27,18 @@ if __name__ == "__main__":
     #     print(outputs)
     #     print(targets)
 
+    count_network = 0
+    count_greedy = 0
+    test_rount = 300
 
     e = Env(size=6)
 
-    for _ in range(10):
+    for _ in range(test_rount):
+        print(_)
         done = False
         obs = e.reset()
+        g_e = deepcopy(e)
+
         obs = np.reshape(obs, (1, 4, 6, 6))
         obs = torch.FloatTensor(obs).cuda()
         while not done:
@@ -52,4 +59,22 @@ if __name__ == "__main__":
             obs = np.reshape(obs, (1, 4, 6, 6))
             obs = torch.FloatTensor(obs).cuda()
 
-        print(e.game.step)
+        done = False
+        while not done:
+            action_index = greedy(g_e.game, 1)[0] - 1
+            next_obs, reward, done, _ = g_e.step(action_index)
+        greedy_step = g_e.game.step
+
+        # print(e.game.step, g_e.game.step)
+        # print(e.game.allStep, g_e.game.allStep)
+        # print()
+        count_network += e.game.step
+        count_greedy += g_e.game.step
+
+    print(
+        '''
+        cnn   : avg %.4f step
+        greedy: avg %.4f step
+        ''' % 
+        (count_network / test_rount, count_greedy / test_rount)
+    )

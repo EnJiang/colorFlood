@@ -6,7 +6,7 @@ from tqdm import tqdm
 import random
 
 class Node(object):
-    def __init__(self, env, policy, c=3):
+    def __init__(self, env, policy, c=1):
         self.env = env
         self.N = 0
         self.N_a_list = [0 for _ in range(6)]
@@ -188,7 +188,7 @@ class MCTS(object):
         N_a_list = self.root_node.N_a_list
         # result = [q / N for q, N in zip(q_a_list, N_a_list)]
         result = N_a_list
-        result[last_action_index] = -inf
+        result[last_action_index] = 0
         return result
 
 def init_node(env, model=None, use_nn=False):

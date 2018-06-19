@@ -9,24 +9,50 @@ if __name__ == "__main__":
     model = torch.load("pre_cnn.pkl").cuda()
     model.train()
 
+    obs_memory = []
+    act_memory = []
+
     e = Env(size=6)
     done = False
     e.reset()
     for _ in range(100):
         done = False
-        e.reset()
+        obs = e.reset()
         g_e = deepcopy(e)
 
+        eopch_obs = [obs]
+        epoch_pi = []
+        epoch_a = []
+
+        a = 1
+
         while not done:
-            root_node = init_node(e, use_nn=False)
-            t = MCTS(root_node)
+            root_node = init_node(e, use_nn=True, model=model)
+            t = MCTS(root_node, use_nn=True, net=model)
             t.run(time=5000)
-            # print(t.pi)
+
+            epoch_pi.append(t.pi)
+            epoch_a.append(a)
+            a *= 0.8
+            
             action_index = np.argmax(t.pi)
+
+            # print(t.pi)
             # print(e.game)
             # print(action_index)
             # print()
-            next_obs, reward, done, _ = e.step(action_index)
+            obs, reward, done, _ = e.step(action_index)
+            eopch_obs.append(obs)
+
+        # now that the game is done, we had a terminal obs
+        # add its pi, and another a, and reverse epoch_a
+        epoch_pi.append([0 for _ in range(6)])
+        epoch_a.append(a)
+        epoch_a.reverse()
+
+        print(epoch_a)
+        print(e.game.step)
+        exit()
 
         done = False
         while not done:
