@@ -20,7 +20,6 @@ def greedy_evluate(env):
 
 
 def generate_epoch_training_data(model):
-    model = deepcopy(model)
     model.eval()
 
     e = Env(size=6)
