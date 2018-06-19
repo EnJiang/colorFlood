@@ -122,6 +122,6 @@ if __name__ == "__main__":
     for i in range(1, 10000):
         e.reset()
         greedy_step = greedy_evluate(e)
-        s += greedy_evluate
+        s += greedy_step
         print(s / i, i)
             
