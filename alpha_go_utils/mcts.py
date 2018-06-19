@@ -1,16 +1,18 @@
 import numpy as np
 from copy import deepcopy
 from math import sqrt, inf
-import torch
+# import torch
 from tqdm import tqdm
 import random
+
 
 class Node(object):
     def __init__(self, env, policy, c=1):
         self.env = env
         self.N = 0
         self.N_a_list = [0 for _ in range(6)]
-        self.q_a_list = [0 for _ in range(6)]
+        # add some random noise
+        self.q_a_list = [random.random() / 10000 for _ in range(6)]
         self.p_a_list = policy
         self.c = c
         self.children_hash_list = self.cal_child_node_hash()
@@ -88,15 +90,21 @@ class MCTS(object):
         self.root_node = root_node
         self.size = size
 
-    def run(self, time=1):
-        for _ in tqdm(range(time)):
-            self.search_down(self.root_node)
+    def run(self, baseline, time=1):
+        # for _ in tqdm(range(time)):
+        for _ in range(time):
+            self.simulate(self.root_node, baseline)
 
-    def search_down(self, root):
+    def simulate(self, root, baseline):
         chain = []
         next_root = None
 
-        while self.all_children_in_tree(root) and not root.is_over:
+        step_used = root.env.game.step
+
+        # while self.all_children_in_tree(root) and not root.is_over:
+        while not root.is_over:
+            '''put all children in tree'''
+            self.create_nonexist_child(root)
             '''now select by ucb'''
             # print("current root %r" % root)
             next_root, child_index = self.next_search_down_node(root)
@@ -105,14 +113,15 @@ class MCTS(object):
             chain.append((repr(root), child_index))
             root = next_root
         
-        '''now the root node is not full exlpored,
-           let's select a unseen child'''
-        if not root.is_over:
-            child, action_index = self.select_and_create_nonexist_child(root)
-            chain.append((repr(root), action_index))
-            v = self.predict_value(child.env)
-        else:
-            v = 1.0
+        '''
+        now add a terminal state
+        check did we defeated baseline
+        '''
+        used = root.env.game.step - step_used
+
+        print(baseline, used, end=';')
+
+        v = baseline - used
 
         # print([one[1] for one in chain], v)
         self.back_prop(chain, v)
@@ -126,17 +135,17 @@ class MCTS(object):
             )
         )
 
-    def select_and_create_nonexist_child(self, root):
-        if self.all_children_in_tree(root):
-            raise ValueError("All children in tree!")
+    def create_nonexist_child(self, root):
+        # if self.all_children_in_tree(root):
+        #     raise ValueError("All children in tree!")
+        keys = self.tree.keys()
         for action_index in range(self.size):
-            if (root.children_hash_list[action_index] not in self.tree.keys()):
+            '''if not in tree, put it in'''
+            if (root.children_hash_list[action_index] not in keys):
                 tmp_env = deepcopy(root.env)
                 tmp_env.step(action_index)
                 child = Node(tmp_env, self.predict_policy(tmp_env))
                 self.tree[repr(child)] = child
-                break # explore only one child
-        return child, action_index
 
     def next_search_down_node(self, root):
         ucb_list = root.ucb_list()
@@ -169,12 +178,6 @@ class MCTS(object):
             return output[: self.size]
         else:
             return [1 for _ in range(self.size)]
-
-    def predict_value(self, env):
-        if self.use_nn:
-            output = self.network_forward(env)
-            return output[-1]
-        return env.game.targetArea() / (self.size ** 2)
 
     def back_prop(self, chain, v):
         for hash_string, action_index in chain:

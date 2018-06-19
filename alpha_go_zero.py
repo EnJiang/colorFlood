@@ -1,17 +1,16 @@
-import torch
+# import torch
 from alpha_go_utils.mcts import *
+from alpha_go_utils.network import *
 from env import Env
 import numpy as np
 from copy import deepcopy
 from greedy import greedy
 
-import concurrent.futures
-
 from collections import namedtuple
 
 Report = namedtuple("Report", "step path greedy_step")
 
-SEARCH_TIME = 1600
+SEARCH_TIME = 100
 
 def greedy_evluate(env):
     g_e = deepcopy(env)
@@ -21,7 +20,6 @@ def greedy_evluate(env):
         _, _, done, _ = g_e.step(action_index)
     greedy_step = g_e.game.step
     return greedy_step
-
 
 def generate_epoch_training_data(model):
     model.eval()
@@ -69,59 +67,26 @@ def generate_epoch_training_data(model):
 
     return eopch_obs, epoch_output, report
 
-
-def old_main():
-    model = torch.load("light_trained_pre_cnn.pkl").cuda()
-    model.eval()
-
-    obs_memory = []
-    act_memory = []
-
-    e = Env(size=6)
-    done = False
-    e.reset()
-    for _ in range(100):
-        done = False
-
-        obs = e.reset()
-        g_e = deepcopy(e)
-
-        eopch_obs = [obs]
-        epoch_pi = []
-        epoch_a = []
-
-        a = 1
-
-        while not done:
-            root_node = init_node(e, use_nn=True, model=model)
-            t = MCTS(root_node, use_nn=True, net=model)
-            t.run(time=1000)
-
-            epoch_pi.append(t.pi)
-            epoch_a.append(a)
-            a *= 0.8
-            
-            action_index = np.argmax(t.pi)
-
-            print(t.pi)
-            # print(e.game)
-            # print(action_index)
-            # print()
-            obs, reward, done, _ = e.step(action_index)
-            eopch_obs.append(obs)
-
-        # now that the game is done, we had a terminal obs
-        # add its pi, and another a, and reverse epoch_a
-        epoch_pi.append([0 for _ in range(6)])
-        epoch_a.append(a)
-        epoch_a.reverse()
-
 if __name__ == "__main__":
+    model = ConvNet()
+
     e = Env(size=6)
-    s = 0
-    for i in range(1, 10000):
-        e.reset()
+
+    done = False
+    while not done:
+        step_used = e.game.step
         greedy_step = greedy_evluate(e)
-        s += greedy_step
-        print(s / i, i)
-            
+        baseline = greedy_step - step_used
+
+        root_node = init_node(e, use_nn=True, model=model)
+        t = MCTS(root_node, use_nn=False, net=model)
+        t.run(baseline, time=SEARCH_TIME)
+
+        print()
+        print(e.game)
+        print(t.pi)
+        
+        action_index = np.argmax(t.pi)
+        _, _, done, _ = e.step(action_index)
+
+    print(e.game.step)
