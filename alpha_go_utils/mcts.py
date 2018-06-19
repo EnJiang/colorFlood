@@ -118,8 +118,8 @@ class MCTS(object):
         check did we defeated baseline
         '''
         used = root.env.game.step - step_used
-        print(baseline, used, end=';')
-        v = baseline - used
+        # print(baseline, used, end=';')
+        v = (baseline - used) / 3
 
         # print([one[1] for one in chain], v)
         self.back_prop(chain, v)
