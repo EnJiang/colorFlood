@@ -71,6 +71,7 @@ if __name__ == "__main__":
     model = ConvNet()
 
     e = Env(size=6)
+    e.reset()
 
     done = False
     while not done:
