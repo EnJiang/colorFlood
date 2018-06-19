@@ -89,7 +89,7 @@ class MCTS(object):
         self.size = size
 
     def run(self, time=1):
-        for _ in range(time):
+        for _ in tqdm(range(time)):
             self.search_down(self.root_node)
 
     def search_down(self, root):
