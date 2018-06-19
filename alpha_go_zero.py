@@ -30,7 +30,7 @@ if __name__ == "__main__":
         while not done:
             root_node = init_node(e, use_nn=True, model=model)
             t = MCTS(root_node, use_nn=True, net=model)
-            t.run(time=10000)
+            t.run(time=1000)
 
             epoch_pi.append(t.pi)
             epoch_a.append(a)
