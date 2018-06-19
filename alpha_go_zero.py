@@ -68,6 +68,7 @@ def generate_epoch_training_data(model):
     return eopch_obs, epoch_output, report
 
 if __name__ == "__main__":
+    model = torch.load("pre_cnn.pkl").cuda()
     model = ConvNet().cuda()
 
     e = Env(size=6)
