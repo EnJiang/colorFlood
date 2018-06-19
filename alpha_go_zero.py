@@ -38,7 +38,7 @@ if __name__ == "__main__":
             action_index = np.argmax(t.pi)
 
             # print(t.pi)
-            # print(e.game)
+            print(e.game)
             # print(action_index)
             # print()
             obs, reward, done, _ = e.step(action_index)
