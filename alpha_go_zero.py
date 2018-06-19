@@ -127,7 +127,7 @@ if __name__ == "__main__":
         _, _, report = generate_epoch_training_data(model)
 
         mcts_step += report.step
-        greedy += report.greedy_step
+        greedy_step += report.greedy_step
 
         print('''
         mcts   :  %.4f
