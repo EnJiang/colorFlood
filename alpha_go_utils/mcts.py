@@ -195,7 +195,7 @@ def init_node(env, model=None, use_nn=False):
     assert not (model is None and use_nn == True)
     if use_nn:
         model.eval()
-        obs = env.reset()
+        obs = env.last_obs
         obs = np.reshape(obs, (1, 4, 6, 6))
         obs = torch.FloatTensor(obs).cuda()
         output = model(obs)
