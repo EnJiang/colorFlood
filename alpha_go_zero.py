@@ -118,9 +118,9 @@ if __name__ == "__main__":
     model = torch.load("light_trained_pre_cnn.pkl").cuda()
     model.eval()
 
-    _, _, report = generate_epoch_training_data(model)
+    # _, _, report = generate_epoch_training_data(model)
     with concurrent.futures.ProcessPoolExecutor(max_workers=8) as executor:
-        futures = [executor.submit(generate_epoch_training_data)
+        futures = [executor.submit(generate_epoch_training_data, model)
                    for _ in range(8)]
         for future in concurrent.futures.as_completed(futures):
             try:
