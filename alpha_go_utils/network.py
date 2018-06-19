@@ -69,6 +69,13 @@ class MyLoss(nn.Module):
 
         return loss_1 + loss_2
 
+def MaskPiLoss(MyLoss):
+    def forward(self, predict, real):
+        target_2 = real[:, -1:]
+        loss_2 = self.loss_func_2(predict[:, -1:], target_2)
+
+        return loss_2
+
 if __name__ == "__main__":
     model = ConvNet()
     data = np.random.rand(1, 4, 11, 11)

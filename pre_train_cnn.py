@@ -1,5 +1,5 @@
 from alpha_go_utils.data import *
-from alpha_go_utils.network import ConvNet, MyLoss
+from alpha_go_utils.network import ConvNet, MaskPiLoss
 import numpy as np
 import torch.optim as optim
 import torch.nn as nn
@@ -75,13 +75,13 @@ if __name__ == "__main__":
     # model = torch.load("light_trained_pre_cnn.pkl").cuda()
     model.train()
 
-    criterion = MyLoss()
+    criterion = MaskPiLoss()
     optimizer = optim.SGD(model.parameters(), lr=3*1e-4,
                           momentum=0.9, weight_decay=5e-4)
 
     # validate(model, vdataloader, len(vxs) // batch_size, criterion)
 
-    for epoch in range(1):
+    for epoch in range(3):
         train_loss = 0
         for batch_idx, sample in tqdm(enumerate(tdataloader), total=tbatch_num):
             # print(type(sample))
